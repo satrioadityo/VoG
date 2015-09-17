@@ -5,10 +5,6 @@
  */
 package tugas.akhir.vog;
 
-import java.awt.FileDialog;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,6 +12,7 @@ import javax.swing.JFileChooser;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.stream.file.FileSinkDGS;
+import org.graphstream.stream.file.FileSourceDGS;
 
 /**
  *
@@ -148,65 +145,31 @@ public class Visualisasi extends javax.swing.JFrame {
         // open file dialog untuk memilih graph database
         JFileChooser fc = new JFileChooser();
         fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        fc.showOpenDialog(this);
-        String file = fc.getSelectedFile().getAbsolutePath();
-        if(file == null){
-            System.err.println("Canceled !");
-        }
-        else{
-            System.out.println(file);
-        }   
-        
-        BufferedReader br = null;
-        try {
-            // TODO konversi dataset txt ke dgs
-            String line;
-            String[] split = new String[2];
-            graph = new SingleGraph("Graph Stanford");
+        int rtn = fc.showOpenDialog(this);
+        graph = new SingleGraph("Graph Stanford");
+        if(rtn == JFileChooser.APPROVE_OPTION){
             
-            graph.addAttribute("ui.stylesheet", styleSheet);
-            br = new BufferedReader(new FileReader(file));
+            String file = fc.getSelectedFile().getAbsolutePath();
+            System.out.println(file);
+            
+            FileSourceDGS fdgs = new FileSourceDGS();
+            fdgs.addSink(graph);
+            
             try {
-                double idEdge = 0;
-                while((line = br.readLine()) != null){
-                    // split data/line dapetin id
-                    split = line.split("\t");
-                    
-                    // buat node dr id jika node belum ada
-                    if(graph.getNode(split[0]) == null){
-                        graph.addNode(split[0]);
-                        graph.getNode(split[0]).addAttribute("ui.label", split[0]);
-                        graph.getNode(split[0]).addAttribute("ui.class", "node");
-                    }
-                    if(graph.getNode(split[1]) == null){
-                        graph.addNode(split[1]);
-                        graph.getNode(split[1]).addAttribute("ui.label", split[1]);
-                        graph.getNode(split[0]).addAttribute("ui.class", "node");
-                    }
-                    
-                    // tambahkan edge dari node ke node jika belum ada
-                    if(!graph.getNode(split[0]).hasEdgeToward(split[1])){
-                        graph.addEdge(idEdge+"", split[0], split[1], true);
-                        graph.getEdge(idEdge+"").addAttribute("ui.class", "edge");
-                    }
-                    System.out.println(idEdge);
-                    idEdge++;
-                }
-                graph.display();
-                
-                
+                // proses load data
+                fdgs.readAll(file);
             } catch (IOException ex) {
                 Logger.getLogger(Visualisasi.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                fdgs.removeSink(graph);
             }
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Visualisasi.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                br.close();
-            } catch (IOException ex) {
-                Logger.getLogger(Visualisasi.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            System.out.println("success load "+ file);
+            graph.display();
         }
+        else {
+            System.err.println("Load canceled !");
+        }
+        
     }//GEN-LAST:event_menuItemLoadGraphActionPerformed
 
     private void menuItemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemExitActionPerformed
@@ -219,15 +182,20 @@ public class Visualisasi extends javax.swing.JFrame {
         // open save dialog to save the graph
         JFileChooser fc = new JFileChooser();
         fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        fc.showSaveDialog(this);
-        String file = fc.getSelectedFile().getAbsolutePath();
-        try {
-            // TODO save current graph to dgs file
-            FileSinkDGS fsdgs = new FileSinkDGS();
-            fsdgs.writeAll(graph, file);
-            System.out.println("success");
-        } catch (IOException ex) {
-            Logger.getLogger(Visualisasi.class.getName()).log(Level.SEVERE, null, ex);
+        int rtn = fc.showSaveDialog(this);
+        if(rtn == JFileChooser.APPROVE_OPTION){
+            String file = fc.getSelectedFile().getAbsolutePath();
+            try {
+                // save current graph to dgs file
+                FileSinkDGS fsdgs = new FileSinkDGS();
+                fsdgs.writeAll(graph, file);
+                System.out.println("success save "+ file);
+            } catch (IOException ex) {
+                Logger.getLogger(Visualisasi.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        else{
+            System.err.println("Save canceled !");
         }
     }//GEN-LAST:event_menuItemSaveGraphActionPerformed
 
