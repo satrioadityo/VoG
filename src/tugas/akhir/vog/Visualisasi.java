@@ -25,8 +25,21 @@ public class Visualisasi extends javax.swing.JFrame {
     /**
      * Creates new form Visualisasi
      */
+    
+    String styleSheet;
+    Graph graph;
+    
     public Visualisasi() {
         initComponents();
+        
+        // untuk styling visualisasi graph
+        styleSheet = "node {"+
+                            " fill-color: red;"+
+                            " size: 10px;"+
+                        "}"+
+                    "edge {"+
+                            " fill-color: blue;"+
+                        "}";
     }
 
     /**
@@ -138,7 +151,9 @@ public class Visualisasi extends javax.swing.JFrame {
             // TODO konversi dataset txt ke dgs
             String line;
             String[] split = new String[2];
-            Graph graph = new SingleGraph("Graph Stanford");
+            graph = new SingleGraph("Graph Stanford");
+            
+            graph.addAttribute("ui.stylesheet", styleSheet);
             br = new BufferedReader(new FileReader(file));
             try {
                 int idEdge = 0;
@@ -149,16 +164,19 @@ public class Visualisasi extends javax.swing.JFrame {
                     // buat node dr id jika node belum ada
                     if(graph.getNode(split[0]) == null){
                         graph.addNode(split[0]);
-                        graph.getNode(split[0]).addAttribute("id", split[0]);
+                        graph.getNode(split[0]).addAttribute("ui.label", split[0]);
+                        graph.getNode(split[0]).addAttribute("ui.class", "node");
                     }
                     if(graph.getNode(split[1]) == null){
                         graph.addNode(split[1]);
-                        graph.getNode(split[1]).addAttribute("id", split[1]);
+                        graph.getNode(split[1]).addAttribute("ui.label", split[1]);
+                        graph.getNode(split[0]).addAttribute("ui.class", "node");
                     }
                     
                     // tambahkan edge dari node ke node jika belum ada
                     if(!graph.getNode(split[0]).hasEdgeToward(split[1])){
                         graph.addEdge(idEdge+"", split[0], split[1], true);
+                        graph.getEdge(idEdge+"").addAttribute("ui.class", "edge");
                     }
                     idEdge++;
                 }
