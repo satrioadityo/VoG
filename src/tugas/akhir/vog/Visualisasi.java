@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.SingleGraph;
+import org.graphstream.stream.file.FileSinkDGS;
 
 /**
  *
@@ -109,6 +110,11 @@ public class Visualisasi extends javax.swing.JFrame {
 
         menuItemExit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_MASK));
         menuItemExit.setText("Exit");
+        menuItemExit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemExitActionPerformed(evt);
+            }
+        });
         menuFile.add(menuItemExit);
 
         jMenuBar1.add(menuFile);
@@ -156,7 +162,7 @@ public class Visualisasi extends javax.swing.JFrame {
             graph.addAttribute("ui.stylesheet", styleSheet);
             br = new BufferedReader(new FileReader(file));
             try {
-                int idEdge = 0;
+                double idEdge = 0;
                 while((line = br.readLine()) != null){
                     // split data/line dapetin id
                     split = line.split("\t");
@@ -178,13 +184,15 @@ public class Visualisasi extends javax.swing.JFrame {
                         graph.addEdge(idEdge+"", split[0], split[1], true);
                         graph.getEdge(idEdge+"").addAttribute("ui.class", "edge");
                     }
+                    System.out.println(idEdge);
                     idEdge++;
                 }
                 graph.display();
                 
                 // TODO save dgs
-                // TODO load file ke aplikasi
-                // TODO visualisasikan pakai graph stream
+                FileSinkDGS fsdgs = new FileSinkDGS();
+                fsdgs.writeAll(graph, "stanford-dataset500.dgs");
+                System.out.println("success");
             } catch (IOException ex) {
                 Logger.getLogger(Visualisasi.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -198,6 +206,11 @@ public class Visualisasi extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_menuItemLoadGraphActionPerformed
+
+    private void menuItemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemExitActionPerformed
+        // exit the apps
+        System.exit(1);
+    }//GEN-LAST:event_menuItemExitActionPerformed
 
     /**
      * @param args the command line arguments
