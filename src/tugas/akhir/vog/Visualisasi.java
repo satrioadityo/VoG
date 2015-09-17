@@ -6,7 +6,15 @@
 package tugas.akhir.vog;
 
 import java.awt.FileDialog;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import org.graphstream.graph.Graph;
+import org.graphstream.graph.implementations.SingleGraph;
 
 /**
  *
@@ -35,6 +43,7 @@ public class Visualisasi extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         menuFile = new javax.swing.JMenu();
         menuItemLoadGraph = new javax.swing.JMenuItem();
+        menuItemSaveGraph = new javax.swing.JMenuItem();
         menuItemExit = new javax.swing.JMenuItem();
         menuEdit = new javax.swing.JMenu();
 
@@ -81,6 +90,10 @@ public class Visualisasi extends javax.swing.JFrame {
         });
         menuFile.add(menuItemLoadGraph);
 
+        menuItemSaveGraph.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
+        menuItemSaveGraph.setText("Save Graph");
+        menuFile.add(menuItemSaveGraph);
+
         menuItemExit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_MASK));
         menuItemExit.setText("Exit");
         menuFile.add(menuItemExit);
@@ -107,17 +120,64 @@ public class Visualisasi extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void menuItemLoadGraphActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemLoadGraphActionPerformed
-        // TODO open file dialog untuk memilih graph database
+        
+        // open file dialog untuk memilih graph database
         JFileChooser fc = new JFileChooser();
         fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fc.showOpenDialog(this);
-        
         String file = fc.getSelectedFile().getAbsolutePath();
         if(file == null){
             System.err.println("Canceled !");
         }
         else{
             System.out.println(file);
+        }   
+        
+        BufferedReader br = null;
+        try {
+            // TODO konversi dataset txt ke dgs
+            String line;
+            String[] split = new String[2];
+            Graph graph = new SingleGraph("Graph Stanford");
+            br = new BufferedReader(new FileReader(file));
+            try {
+                int idEdge = 0;
+                while((line = br.readLine()) != null){
+                    // split data/line dapetin id
+                    split = line.split("\t");
+                    
+                    // buat node dr id jika node belum ada
+                    if(graph.getNode(split[0]) == null){
+                        graph.addNode(split[0]);
+                        graph.getNode(split[0]).addAttribute("id", split[0]);
+                    }
+                    if(graph.getNode(split[1]) == null){
+                        graph.addNode(split[1]);
+                        graph.getNode(split[1]).addAttribute("id", split[1]);
+                    }
+                    
+                    // tambahkan edge dari node ke node jika belum ada
+                    if(!graph.getNode(split[0]).hasEdgeToward(split[1])){
+                        graph.addEdge(idEdge+"", split[0], split[1], true);
+                    }
+                    idEdge++;
+                }
+                graph.display();
+                
+                // TODO save dgs
+                // TODO load file ke aplikasi
+                // TODO visualisasikan pakai graph stream
+            } catch (IOException ex) {
+                Logger.getLogger(Visualisasi.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Visualisasi.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                br.close();
+            } catch (IOException ex) {
+                Logger.getLogger(Visualisasi.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }//GEN-LAST:event_menuItemLoadGraphActionPerformed
 
@@ -163,6 +223,7 @@ public class Visualisasi extends javax.swing.JFrame {
     private javax.swing.JMenu menuFile;
     private javax.swing.JMenuItem menuItemExit;
     private javax.swing.JMenuItem menuItemLoadGraph;
+    private javax.swing.JMenuItem menuItemSaveGraph;
     private javax.swing.JPanel paneMain;
     // End of variables declaration//GEN-END:variables
 }
