@@ -106,6 +106,11 @@ public class Visualisasi extends javax.swing.JFrame {
 
         menuItemSaveGraph.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
         menuItemSaveGraph.setText("Save Graph");
+        menuItemSaveGraph.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemSaveGraphActionPerformed(evt);
+            }
+        });
         menuFile.add(menuItemSaveGraph);
 
         menuItemExit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_MASK));
@@ -189,10 +194,7 @@ public class Visualisasi extends javax.swing.JFrame {
                 }
                 graph.display();
                 
-                // TODO save dgs
-                FileSinkDGS fsdgs = new FileSinkDGS();
-                fsdgs.writeAll(graph, "stanford-dataset500.dgs");
-                System.out.println("success");
+                
             } catch (IOException ex) {
                 Logger.getLogger(Visualisasi.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -211,6 +213,23 @@ public class Visualisasi extends javax.swing.JFrame {
         // exit the apps
         System.exit(1);
     }//GEN-LAST:event_menuItemExitActionPerformed
+
+    private void menuItemSaveGraphActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemSaveGraphActionPerformed
+        
+        // open save dialog to save the graph
+        JFileChooser fc = new JFileChooser();
+        fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fc.showSaveDialog(this);
+        String file = fc.getSelectedFile().getAbsolutePath();
+        try {
+            // TODO save current graph to dgs file
+            FileSinkDGS fsdgs = new FileSinkDGS();
+            fsdgs.writeAll(graph, file);
+            System.out.println("success");
+        } catch (IOException ex) {
+            Logger.getLogger(Visualisasi.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_menuItemSaveGraphActionPerformed
 
     /**
      * @param args the command line arguments
