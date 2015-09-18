@@ -5,14 +5,18 @@
  */
 package tugas.akhir.vog;
 
+import java.awt.BorderLayout;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import org.graphstream.graph.Graph;
+import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.stream.file.FileSinkDGS;
 import org.graphstream.stream.file.FileSourceDGS;
+import org.graphstream.ui.swingViewer.View;
+import org.graphstream.ui.swingViewer.Viewer;
 
 /**
  *
@@ -49,8 +53,12 @@ public class Visualisasi extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollBar1 = new javax.swing.JScrollBar();
         paneMain = new javax.swing.JPanel();
-        jPanel1 = new javax.swing.JPanel();
+        paneGraphVis = new javax.swing.JPanel();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        paneVisualisasi = new javax.swing.JPanel();
+        paneContainerQuery = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuFile = new javax.swing.JMenu();
         menuItemLoadGraph = new javax.swing.JMenuItem();
@@ -62,15 +70,45 @@ public class Visualisasi extends javax.swing.JFrame {
 
         paneMain.setBackground(new java.awt.Color(1, 1, 1));
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 499, Short.MAX_VALUE)
+        javax.swing.GroupLayout paneVisualisasiLayout = new javax.swing.GroupLayout(paneVisualisasi);
+        paneVisualisasi.setLayout(paneVisualisasiLayout);
+        paneVisualisasiLayout.setHorizontalGroup(
+            paneVisualisasiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 785, Short.MAX_VALUE)
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 204, Short.MAX_VALUE)
+        paneVisualisasiLayout.setVerticalGroup(
+            paneVisualisasiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 283, Short.MAX_VALUE)
+        );
+
+        jTabbedPane1.addTab("Visualisasi", paneVisualisasi);
+
+        javax.swing.GroupLayout paneGraphVisLayout = new javax.swing.GroupLayout(paneGraphVis);
+        paneGraphVis.setLayout(paneGraphVisLayout);
+        paneGraphVisLayout.setHorizontalGroup(
+            paneGraphVisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(paneGraphVisLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jTabbedPane1)
+                .addContainerGap())
+        );
+        paneGraphVisLayout.setVerticalGroup(
+            paneGraphVisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(paneGraphVisLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jTabbedPane1)
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout paneContainerQueryLayout = new javax.swing.GroupLayout(paneContainerQuery);
+        paneContainerQuery.setLayout(paneContainerQueryLayout);
+        paneContainerQueryLayout.setHorizontalGroup(
+            paneContainerQueryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        paneContainerQueryLayout.setVerticalGroup(
+            paneContainerQueryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout paneMainLayout = new javax.swing.GroupLayout(paneMain);
@@ -79,15 +117,19 @@ public class Visualisasi extends javax.swing.JFrame {
             paneMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(paneMainLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(paneMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(paneGraphVis, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(paneContainerQuery, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         paneMainLayout.setVerticalGroup(
             paneMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(paneMainLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(84, Short.MAX_VALUE))
+                .addComponent(paneGraphVis, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(paneContainerQuery, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         menuFile.setText("File");
@@ -146,7 +188,7 @@ public class Visualisasi extends javax.swing.JFrame {
         JFileChooser fc = new JFileChooser();
         fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
         int rtn = fc.showOpenDialog(this);
-        graph = new SingleGraph("Graph Stanford");
+        graph = new MultiGraph("Graph Stanford");
         if(rtn == JFileChooser.APPROVE_OPTION){
             
             String file = fc.getSelectedFile().getAbsolutePath();
@@ -164,7 +206,15 @@ public class Visualisasi extends javax.swing.JFrame {
                 fdgs.removeSink(graph);
             }
             System.out.println("success load "+ file);
-            graph.display();
+//            graph.display();
+            
+            // diplay graph to panel
+            Viewer viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+            View view = viewer.addDefaultView(false);
+            viewer.enableAutoLayout();
+            paneVisualisasi.setLayout(new BorderLayout());
+            paneVisualisasi.add(view, BorderLayout.CENTER);
+            paneVisualisasi.setVisible(true);
         }
         else {
             System.err.println("Load canceled !");
@@ -236,12 +286,16 @@ public class Visualisasi extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollBar jScrollBar1;
+    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JMenu menuEdit;
     private javax.swing.JMenu menuFile;
     private javax.swing.JMenuItem menuItemExit;
     private javax.swing.JMenuItem menuItemLoadGraph;
     private javax.swing.JMenuItem menuItemSaveGraph;
+    private javax.swing.JPanel paneContainerQuery;
+    private javax.swing.JPanel paneGraphVis;
     private javax.swing.JPanel paneMain;
+    private javax.swing.JPanel paneVisualisasi;
     // End of variables declaration//GEN-END:variables
 }
