@@ -6,13 +6,17 @@
 package tugas.akhir.vog;
 
 import java.awt.BorderLayout;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.MultiGraph;
-import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.stream.file.FileSinkDGS;
 import org.graphstream.stream.file.FileSourceDGS;
 import org.graphstream.ui.swingViewer.View;
@@ -28,20 +32,17 @@ public class Visualisasi extends javax.swing.JFrame {
      * Creates new form Visualisasi
      */
     
-    String styleSheet;
+    String styleSheet = "";
     Graph graph;
+    int idUrl, idUser;
     
     public Visualisasi() {
         initComponents();
         
         // untuk styling visualisasi graph
-        styleSheet = "node {"+
-                            " fill-color: red;"+
-                            " size: 10px;"+
-                        "}"+
-                    "edge {"+
-                            " fill-color: blue;"+
-                        "}";
+        styleSheet = "node {fill-color: red;size: 10px;}"+
+                     "edge {fill-color: yellow;}"+
+                     "node.question {fill-color: green;}";
     }
 
     /**
@@ -59,9 +60,11 @@ public class Visualisasi extends javax.swing.JFrame {
         jTabbedPane1 = new javax.swing.JTabbedPane();
         paneVisualisasi = new javax.swing.JPanel();
         paneContainerQuery = new javax.swing.JPanel();
+        txtInputQuery = new javax.swing.JTextField();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuFile = new javax.swing.JMenu();
         menuItemLoadGraph = new javax.swing.JMenuItem();
+        menuItemLoadGraphRaw = new javax.swing.JMenuItem();
         menuItemSaveGraph = new javax.swing.JMenuItem();
         menuItemExit = new javax.swing.JMenuItem();
         menuEdit = new javax.swing.JMenu();
@@ -100,15 +103,27 @@ public class Visualisasi extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        txtInputQuery.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtInputQueryActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout paneContainerQueryLayout = new javax.swing.GroupLayout(paneContainerQuery);
         paneContainerQuery.setLayout(paneContainerQueryLayout);
         paneContainerQueryLayout.setHorizontalGroup(
             paneContainerQueryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(paneContainerQueryLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(txtInputQuery)
+                .addContainerGap())
         );
         paneContainerQueryLayout.setVerticalGroup(
             paneContainerQueryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
+            .addGroup(paneContainerQueryLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(txtInputQuery, javax.swing.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout paneMainLayout = new javax.swing.GroupLayout(paneMain);
@@ -142,6 +157,14 @@ public class Visualisasi extends javax.swing.JFrame {
             }
         });
         menuFile.add(menuItemLoadGraph);
+
+        menuItemLoadGraphRaw.setText("Load Graph from Raw");
+        menuItemLoadGraphRaw.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemLoadGraphRawActionPerformed(evt);
+            }
+        });
+        menuFile.add(menuItemLoadGraphRaw);
 
         menuItemSaveGraph.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
         menuItemSaveGraph.setText("Save Graph");
@@ -188,9 +211,9 @@ public class Visualisasi extends javax.swing.JFrame {
         JFileChooser fc = new JFileChooser();
         fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
         int rtn = fc.showOpenDialog(this);
-        graph = new MultiGraph("Graph Stanford");
+        graph = new MultiGraph("Graph Quora");
+        
         if(rtn == JFileChooser.APPROVE_OPTION){
-            
             String file = fc.getSelectedFile().getAbsolutePath();
             System.out.println(file);
             
@@ -206,7 +229,6 @@ public class Visualisasi extends javax.swing.JFrame {
                 fdgs.removeSink(graph);
             }
             System.out.println("success load "+ file);
-//            graph.display();
             
             // diplay graph to panel
             Viewer viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
@@ -248,6 +270,109 @@ public class Visualisasi extends javax.swing.JFrame {
             System.err.println("Save canceled !");
         }
     }//GEN-LAST:event_menuItemSaveGraphActionPerformed
+
+    private void txtInputQueryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtInputQueryActionPerformed
+        // TODO query processing dari text yg diinput user
+        System.out.println("oke");
+    }//GEN-LAST:event_txtInputQueryActionPerformed
+
+    private void menuItemLoadGraphRawActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemLoadGraphRawActionPerformed
+        // TODO load graph from Raw Web
+        
+        // open file dialog untuk memilih graph database
+        JFileChooser fc = new JFileChooser();
+        fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        int rtn = fc.showOpenDialog(this);
+        graph = new MultiGraph("Graph Quora");
+        graph.addAttribute("ui.stylesheet", styleSheet);
+        BufferedReader br = null;
+        
+        if(rtn == JFileChooser.APPROVE_OPTION){
+            try {
+                // load dari txt
+                String filePath = fc.getSelectedFile().getAbsolutePath();
+                String line;
+                ArrayList<String> listNodeUser = new ArrayList<>();
+                ArrayList<String> listNextUrl = new ArrayList<>();
+                
+                br = new BufferedReader(new FileReader(new File(filePath)));
+                
+                // read file perline
+                
+                idUrl = graph.getNodeCount();
+                idUser = graph.getNodeCount();
+                while((line = br.readLine()) != null){
+                    // proses perline parsing jadi node URL, USER, NEXT_URL
+                    
+                    String nodeUrl = null;
+                    
+                    // ada row dari raw data yang ga ada usernya, eliminasi aja
+                    if(!"[]".equals(line.split("###")[1])){
+                        // DAPAT NODE URL
+                        nodeUrl = line.split("###")[0];
+                    
+                        String rawUser = line.split("###")[1];
+                        // karena listNodeUser masih ada [ dan ], maka hilangkan dulu
+                        rawUser = rawUser.substring(1, rawUser.length()-1);
+                        for (String user : rawUser.split(", ")) {
+                            // DAPAT KUMPULAN NODE USER
+                            listNodeUser.add(user);
+                        }
+                        
+                        String rawNextUrl = line.split("###")[2];
+                        for(String nextUrl : rawNextUrl.split(", ")){
+                            // DAPAT KUMPULAN NODE NEXT URL
+                            listNextUrl.add(nextUrl);
+                        }
+                    }
+                    
+                    // dari node-node yang sudah didapat, buat node di graphstream
+                    if(graph.getNode(nodeUrl) == null){
+                        // kalo belum ada bikin nodenya
+                        graph.addNode("url"+idUrl);
+                        graph.getNode("url"+idUrl).addAttribute("url", nodeUrl);
+                        graph.getNode("url"+idUrl).addAttribute("ui.class", "question");
+                        // TODO label perlu (mungkin)
+                    }
+                    
+                    // buat node user, hubungkan ke masing2 url
+                    for(String user : listNodeUser){
+                        // jika user belum ada, buat node user, hubungkan dengan url
+                        if(graph.getNode(user) == null){
+                            System.out.println("user"+idUser);
+                            graph.addNode("user"+idUser);
+                            graph.getNode("user"+idUser).addAttribute("user", user);
+                            graph.getNode("user"+idUser).addAttribute("ui.class", "user");
+                            graph.addEdge("answer"+idUser, "url"+idUrl, "user"+idUser);
+                        }
+                        // kalo ada langsung hubungkan
+                        else{
+                            System.out.println("bbb");
+                            graph.addEdge("answer"+idUser, "url"+idUrl, "user"+idUser);
+                        }
+                        idUser++;
+                    }
+                    idUrl++;
+                }
+                
+                System.out.println("success load "+ filePath);
+                // diplay graph to panel
+                Viewer viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+                View view = viewer.addDefaultView(false);
+                viewer.enableAutoLayout();
+                paneVisualisasi.setLayout(new BorderLayout());
+                paneVisualisasi.add(view, BorderLayout.CENTER);
+                paneVisualisasi.setVisible(true);
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Visualisasi.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(Visualisasi.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        else{
+            System.out.println("Load canceled");
+        }
+    }//GEN-LAST:event_menuItemLoadGraphRawActionPerformed
 
     /**
      * @param args the command line arguments
@@ -292,10 +417,12 @@ public class Visualisasi extends javax.swing.JFrame {
     private javax.swing.JMenu menuFile;
     private javax.swing.JMenuItem menuItemExit;
     private javax.swing.JMenuItem menuItemLoadGraph;
+    private javax.swing.JMenuItem menuItemLoadGraphRaw;
     private javax.swing.JMenuItem menuItemSaveGraph;
     private javax.swing.JPanel paneContainerQuery;
     private javax.swing.JPanel paneGraphVis;
     private javax.swing.JPanel paneMain;
     private javax.swing.JPanel paneVisualisasi;
+    private javax.swing.JTextField txtInputQuery;
     // End of variables declaration//GEN-END:variables
 }
