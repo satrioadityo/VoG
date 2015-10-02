@@ -324,33 +324,42 @@ public class Visualisasi extends javax.swing.JFrame {
                             // DAPAT KUMPULAN NODE NEXT URL
                             listNextUrl.add(nextUrl);
                         }
-                    }
-                    
-                    // dari node-node yang sudah didapat, buat node di graphstream
-                    if(graph.getNode(nodeUrl) == null){
-                        // kalo belum ada bikin nodenya
-                        graph.addNode("url"+idUrl);
-                        graph.getNode("url"+idUrl).addAttribute("url", nodeUrl);
-                        graph.getNode("url"+idUrl).addAttribute("ui.class", "question");
-                        // TODO label perlu (mungkin)
-                    }
-                    
-                    // buat node user, hubungkan ke masing2 url
-                    for(String user : listNodeUser){
-                        // jika user belum ada, buat node user, hubungkan dengan url
-                        if(graph.getNode(user) == null){
-                            System.out.println("user"+idUser);
-                            graph.addNode("user"+idUser);
-                            graph.getNode("user"+idUser).addAttribute("user", user);
-                            graph.getNode("user"+idUser).addAttribute("ui.class", "user");
-                            graph.addEdge("answer"+idUser, "url"+idUrl, "user"+idUser);
+                        
+                        // dari node-node yang sudah didapat, buat node di graphstream
+                        if(graph.getNode(nodeUrl) == null){
+                            // kalo belum ada bikin nodenya
+                            graph.addNode("url"+idUrl);
+                            graph.getNode("url"+idUrl).addAttribute("url", nodeUrl);
+                            graph.getNode("url"+idUrl).addAttribute("ui.class", "question");
+                            graph.getNode("url"+idUrl).addAttribute("ui.label", nodeUrl);
+                            // TODO label perlu (mungkin)
                         }
-                        // kalo ada langsung hubungkan
-                        else{
-                            System.out.println("bbb");
-                            graph.addEdge("answer"+idUser, "url"+idUrl, "user"+idUser);
+                        
+                        // buat node user, hubungkan ke masing2 url
+                        for(String user : listNodeUser){
+                            // jika user belum ada, buat node user, hubungkan dengan url
+                            if(graph.getNode(user) == null){
+                                System.out.println("user"+idUser);
+                                graph.addNode("user"+idUser);
+                                graph.getNode("user"+idUser).addAttribute("user", user);
+                                graph.getNode("user"+idUser).addAttribute("ui.class", "user");
+                                graph.getNode("user"+idUser).addAttribute("ui.label", user);
+
+
+                                graph.addEdge("answer"+idUser, "url"+idUrl, "user"+idUser);
+                            }
+                            // kalo ada langsung hubungkan
+                            else{
+                                System.out.println("bbb");
+                                graph.addEdge("answer"+idUser, "url"+idUrl, "user"+idUser);
+                            }
+                            idUser++;
                         }
-                        idUser++;
+                        // kosongkan lagi usernya
+                        listNodeUser.clear();
+                    }
+                    else{
+                        System.err.println("got an error");
                     }
                     idUrl++;
                 }
