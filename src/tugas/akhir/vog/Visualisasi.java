@@ -328,10 +328,9 @@ public class Visualisasi extends javax.swing.JFrame {
                         // dari node-node yang sudah didapat, buat node di graphstream
                         if(graph.getNode(nodeUrl) == null){
                             // kalo belum ada bikin nodenya
-                            graph.addNode("url"+idUrl);
-                            graph.getNode("url"+idUrl).addAttribute("url", nodeUrl);
-                            graph.getNode("url"+idUrl).addAttribute("ui.class", "question");
-                            graph.getNode("url"+idUrl).addAttribute("ui.label", nodeUrl);
+                            graph.addNode(nodeUrl);
+                            graph.getNode(nodeUrl).addAttribute("ui.class", "question");
+                            graph.getNode(nodeUrl).addAttribute("ui.label", nodeUrl);
                             // TODO label perlu (mungkin)
                         }
                         
@@ -339,19 +338,17 @@ public class Visualisasi extends javax.swing.JFrame {
                         for(String user : listNodeUser){
                             // jika user belum ada, buat node user, hubungkan dengan url
                             if(graph.getNode(user) == null){
-                                System.out.println("user"+idUser);
-                                graph.addNode("user"+idUser);
-                                graph.getNode("user"+idUser).addAttribute("user", user);
-                                graph.getNode("user"+idUser).addAttribute("ui.class", "user");
-                                graph.getNode("user"+idUser).addAttribute("ui.label", user);
-
-
-                                graph.addEdge("answer"+idUser, "url"+idUrl, "user"+idUser);
+                                graph.addNode(user);
+                                graph.getNode(user).addAttribute("ui.class", "user");
+                                graph.getNode(user).addAttribute("ui.label", user);
+                                
+                                // hubungkan ke node url
+                                graph.addEdge("answer"+idUser, nodeUrl, user);
                             }
                             // kalo ada langsung hubungkan
                             else{
                                 System.out.println("bbb");
-                                graph.addEdge("answer"+idUser, "url"+idUrl, "user"+idUser);
+                                graph.addEdge("answer"+idUser, nodeUrl, user);
                             }
                             idUser++;
                         }
