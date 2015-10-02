@@ -69,6 +69,10 @@ public class Visualisasi extends javax.swing.JFrame {
         paneVisualisasi = new javax.swing.JPanel();
         paneContainerQuery = new javax.swing.JPanel();
         txtInputQuery = new javax.swing.JTextField();
+        btnUpCamera = new javax.swing.JButton();
+        btnDownCamera = new javax.swing.JButton();
+        btnRightCamera = new javax.swing.JButton();
+        btnLeftCamera = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuFile = new javax.swing.JMenu();
         menuItemLoadGraph = new javax.swing.JMenuItem();
@@ -81,6 +85,11 @@ public class Visualisasi extends javax.swing.JFrame {
 
         paneMain.setBackground(new java.awt.Color(1, 1, 1));
 
+        paneVisualisasi.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                paneVisualisasiMouseDragged(evt);
+            }
+        });
         paneVisualisasi.addMouseWheelListener(new java.awt.event.MouseWheelListener() {
             public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
                 paneVisualisasiMouseWheelMoved(evt);
@@ -95,7 +104,7 @@ public class Visualisasi extends javax.swing.JFrame {
         );
         paneVisualisasiLayout.setVerticalGroup(
             paneVisualisasiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 283, Short.MAX_VALUE)
+            .addGap(0, 289, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Visualisasi", paneVisualisasi);
@@ -113,13 +122,42 @@ public class Visualisasi extends javax.swing.JFrame {
             paneGraphVisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(paneGraphVisLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
+        txtInputQuery.setFont(new java.awt.Font("Ubuntu", 0, 24)); // NOI18N
         txtInputQuery.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtInputQueryActionPerformed(evt);
+            }
+        });
+
+        btnUpCamera.setText("up");
+        btnUpCamera.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpCameraActionPerformed(evt);
+            }
+        });
+
+        btnDownCamera.setText("Down");
+        btnDownCamera.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDownCameraActionPerformed(evt);
+            }
+        });
+
+        btnRightCamera.setText("Right");
+        btnRightCamera.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRightCameraActionPerformed(evt);
+            }
+        });
+
+        btnLeftCamera.setText("Left");
+        btnLeftCamera.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLeftCameraActionPerformed(evt);
             }
         });
 
@@ -130,13 +168,30 @@ public class Visualisasi extends javax.swing.JFrame {
             .addGroup(paneContainerQueryLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(txtInputQuery)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(paneContainerQueryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, paneContainerQueryLayout.createSequentialGroup()
+                        .addComponent(btnLeftCamera)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnRightCamera))
+                    .addComponent(btnUpCamera, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnDownCamera, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         paneContainerQueryLayout.setVerticalGroup(
             paneContainerQueryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(paneContainerQueryLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(txtInputQuery, javax.swing.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE)
+                .addGroup(paneContainerQueryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(paneContainerQueryLayout.createSequentialGroup()
+                        .addComponent(btnUpCamera)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(paneContainerQueryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnRightCamera)
+                            .addComponent(btnLeftCamera))
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnDownCamera))
+                    .addComponent(txtInputQuery))
                 .addContainerGap())
         );
 
@@ -156,7 +211,7 @@ public class Visualisasi extends javax.swing.JFrame {
             .addGroup(paneMainLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(paneGraphVis, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(paneContainerQuery, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -457,6 +512,46 @@ public class Visualisasi extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_paneVisualisasiMouseWheelMoved
 
+    private void paneVisualisasiMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_paneVisualisasiMouseDragged
+        // TODO add your handling code here:
+        System.out.println("Dragged");
+        View view = viewer.getDefaultView();
+        view.getCamera().setViewCenter(evt.getX(), evt.getY(), 0);
+    }//GEN-LAST:event_paneVisualisasiMouseDragged
+
+    private void btnUpCameraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpCameraActionPerformed
+        // TODO add your handling code here:
+        View view = viewer.getDefaultView();
+        double x = view.getCamera().getViewCenter().x;
+        double y = view.getCamera().getViewCenter().y;
+        view.getCamera().setViewCenter(x, (y+0.5), 0);
+    }//GEN-LAST:event_btnUpCameraActionPerformed
+
+    private void btnDownCameraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDownCameraActionPerformed
+        // TODO add your handling code here:
+        // TODO add your handling code here:
+        View view = viewer.getDefaultView();
+        double x = view.getCamera().getViewCenter().x;
+        double y = view.getCamera().getViewCenter().y;
+        view.getCamera().setViewCenter(x, (y-0.5), 0);
+    }//GEN-LAST:event_btnDownCameraActionPerformed
+
+    private void btnLeftCameraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLeftCameraActionPerformed
+        // TODO add your handling code here:
+        View view = viewer.getDefaultView();
+        double x = view.getCamera().getViewCenter().x;
+        double y = view.getCamera().getViewCenter().y;
+        view.getCamera().setViewCenter((x-0.5), y, 0);
+    }//GEN-LAST:event_btnLeftCameraActionPerformed
+
+    private void btnRightCameraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRightCameraActionPerformed
+        // TODO add your handling code here:
+        View view = viewer.getDefaultView();
+        double x = view.getCamera().getViewCenter().x;
+        double y = view.getCamera().getViewCenter().y;
+        view.getCamera().setViewCenter((x+0.5), y, 0);
+    }//GEN-LAST:event_btnRightCameraActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -493,6 +588,10 @@ public class Visualisasi extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnDownCamera;
+    private javax.swing.JButton btnLeftCamera;
+    private javax.swing.JButton btnRightCamera;
+    private javax.swing.JButton btnUpCamera;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollBar jScrollBar1;
     private javax.swing.JTabbedPane jTabbedPane1;
