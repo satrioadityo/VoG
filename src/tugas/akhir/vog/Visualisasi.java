@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.stream.file.FileSinkDGS;
@@ -36,6 +37,7 @@ public class Visualisasi extends javax.swing.JFrame {
     Graph graph;
     int idUrl, idUser;
     private int idNextUrl;
+    private Viewer viewer;
     
     public Visualisasi() {
         initComponents();
@@ -45,6 +47,10 @@ public class Visualisasi extends javax.swing.JFrame {
                      "edge {fill-color: black; arrow-shape: arrow; arrow-size: 5px, 4px;}"+
                      "node.question {fill-color: green;}"+
                      "node.user {fill-color: blue;}";
+        
+        graph = new MultiGraph("Graph Quora");
+        graph.addAttribute("ui.stylesheet", styleSheet);
+        viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
     }
 
     /**
@@ -74,6 +80,12 @@ public class Visualisasi extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         paneMain.setBackground(new java.awt.Color(1, 1, 1));
+
+        paneVisualisasi.addMouseWheelListener(new java.awt.event.MouseWheelListener() {
+            public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
+                paneVisualisasiMouseWheelMoved(evt);
+            }
+        });
 
         javax.swing.GroupLayout paneVisualisasiLayout = new javax.swing.GroupLayout(paneVisualisasi);
         paneVisualisasi.setLayout(paneVisualisasiLayout);
@@ -213,7 +225,6 @@ public class Visualisasi extends javax.swing.JFrame {
         JFileChooser fc = new JFileChooser();
         fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
         int rtn = fc.showOpenDialog(this);
-        graph = new MultiGraph("Graph Quora");
         
         if(rtn == JFileChooser.APPROVE_OPTION){
             String file = fc.getSelectedFile().getAbsolutePath();
@@ -233,7 +244,6 @@ public class Visualisasi extends javax.swing.JFrame {
             System.out.println("success load "+ file);
             
             // diplay graph to panel
-            Viewer viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
             View view = viewer.addDefaultView(false);
             viewer.enableAutoLayout();
             paneVisualisasi.setLayout(new BorderLayout());
@@ -275,7 +285,26 @@ public class Visualisasi extends javax.swing.JFrame {
 
     private void txtInputQueryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtInputQueryActionPerformed
         // TODO query processing dari text yg diinput user
-        System.out.println("oke");
+        String inputUser = txtInputQuery.getText();
+        
+        // identifikasi query
+        if (inputUser.equals("disableAutoLayout()")){
+            viewer.disableAutoLayout();
+        }
+        else if(inputUser.equals("enableAutoLayout()")){
+            viewer.enableAutoLayout();
+        }
+        else if(inputUser.equals("resetView()")){
+            View view = viewer.getDefaultView();
+            view.getCamera().resetView();
+        }
+        else if(inputUser.equals("getGraphInfo()")){
+            JOptionPane.showMessageDialog(this, "Jumlah node : " + graph.getNodeCount() + "\nJumlah edge : " +
+                    graph.getEdgeCount(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        else{
+            JOptionPane.showMessageDialog(this, "Wrong query !", "Graph Information", JOptionPane.INFORMATION_MESSAGE);
+        }
     }//GEN-LAST:event_txtInputQueryActionPerformed
 
     private void menuItemLoadGraphRawActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemLoadGraphRawActionPerformed
@@ -285,8 +314,7 @@ public class Visualisasi extends javax.swing.JFrame {
         JFileChooser fc = new JFileChooser();
         fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
         int rtn = fc.showOpenDialog(this);
-        graph = new MultiGraph("Graph Quora");
-        graph.addAttribute("ui.stylesheet", styleSheet);
+        
         BufferedReader br = null;
         
         if(rtn == JFileChooser.APPROVE_OPTION){
@@ -361,7 +389,7 @@ public class Visualisasi extends javax.swing.JFrame {
                             if(graph.getNode(nextUrl) == null){
                                 graph.addNode(nextUrl);
                                 graph.getNode(nextUrl).addAttribute("ui.class", "question");
-                                graph.getNode(nextUrl).addAttribute("ui.label", nextUrl);
+//                                graph.getNode(nextUrl).addAttribute("ui.label", nextUrl);
                                 
                                 // hubungkan ke node url
                                 graph.addEdge("related-to"+idNextUrl, nodeUrl, nextUrl, true);
@@ -383,7 +411,6 @@ public class Visualisasi extends javax.swing.JFrame {
                 
                 System.out.println("success load "+ filePath);
                 // diplay graph to panel
-                Viewer viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
                 View view = viewer.addDefaultView(false);
                 viewer.enableAutoLayout();
                 paneVisualisasi.setLayout(new BorderLayout());
@@ -399,6 +426,36 @@ public class Visualisasi extends javax.swing.JFrame {
             System.out.println("Load canceled");
         }
     }//GEN-LAST:event_menuItemLoadGraphRawActionPerformed
+
+    
+    int scroll = 900;
+    private void paneVisualisasiMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_paneVisualisasiMouseWheelMoved
+        // TODO zooming the visualization
+        int rotate = evt.getWheelRotation();
+        double nRotate = evt.getUnitsToScroll();
+        
+        if (rotate < 0) {
+            // scroll up, zoom in
+            if(!(scroll < 1)){
+                View view = viewer.getDefaultView();
+                view.getCamera().setViewPercent(0.001*scroll);
+            }
+            else{
+                scroll = 500;
+            }
+            scroll-=20;
+        } else {
+            // scroll down, zoom out
+            if(!(scroll > 900)){
+                View view = viewer.getDefaultView();
+                view.getCamera().setViewPercent(0.001*scroll);
+            }
+            else{
+                scroll = 500;
+            }
+            scroll+=20;
+        }
+    }//GEN-LAST:event_paneVisualisasiMouseWheelMoved
 
     /**
      * @param args the command line arguments
