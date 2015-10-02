@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.stream.file.FileSinkDGS;
@@ -279,6 +280,8 @@ public class Visualisasi extends javax.swing.JFrame {
         // open file dialog untuk memilih graph database
         JFileChooser fc = new JFileChooser();
         fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("file dgs", "dgs");
+        fc.setFileFilter(filter);
         int rtn = fc.showOpenDialog(this);
         
         if(rtn == JFileChooser.APPROVE_OPTION){
@@ -368,6 +371,8 @@ public class Visualisasi extends javax.swing.JFrame {
         // open file dialog untuk memilih graph database
         JFileChooser fc = new JFileChooser();
         fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("file text", "txt");
+        fc.setFileFilter(filter);
         int rtn = fc.showOpenDialog(this);
         
         BufferedReader br = null;
