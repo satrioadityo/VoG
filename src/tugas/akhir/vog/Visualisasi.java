@@ -35,14 +35,16 @@ public class Visualisasi extends javax.swing.JFrame {
     String styleSheet = "";
     Graph graph;
     int idUrl, idUser;
+    private int idNextUrl;
     
     public Visualisasi() {
         initComponents();
         
         // untuk styling visualisasi graph
-        styleSheet = "node {fill-color: red;size: 10px;}"+
-                     "edge {fill-color: yellow;}"+
-                     "node.question {fill-color: green;}";
+        styleSheet = "node {fill-color: blue; size: 10px;}"+
+                     "edge {fill-color: black; arrow-shape: arrow; arrow-size: 5px, 4px;}"+
+                     "node.question {fill-color: green;}"+
+                     "node.user {fill-color: blue;}";
     }
 
     /**
@@ -301,6 +303,7 @@ public class Visualisasi extends javax.swing.JFrame {
                 
                 idUrl = graph.getNodeCount();
                 idUser = graph.getNodeCount();
+                idNextUrl = graph.getNodeCount();
                 while((line = br.readLine()) != null){
                     // proses perline parsing jadi node URL, USER, NEXT_URL
                     
@@ -343,20 +346,37 @@ public class Visualisasi extends javax.swing.JFrame {
                                 graph.getNode(user).addAttribute("ui.label", user);
                                 
                                 // hubungkan ke node url
-                                graph.addEdge("answer"+idUser, nodeUrl, user);
+                                graph.addEdge("answer"+idUser, user, nodeUrl, true);
                             }
                             // kalo ada langsung hubungkan
                             else{
-                                System.out.println("bbb");
-                                graph.addEdge("answer"+idUser, nodeUrl, user);
+                                graph.addEdge("answer"+idUser, user, nodeUrl, true);
                             }
                             idUser++;
+                        }
+                        
+                        // buat node next_url, hubungkan ke masing2 url
+                        for(String nextUrl : listNextUrl){
+                            // kalo node nextUrl belom ada, create
+                            if(graph.getNode(nextUrl) == null){
+                                graph.addNode(nextUrl);
+                                graph.getNode(nextUrl).addAttribute("ui.class", "question");
+                                graph.getNode(nextUrl).addAttribute("ui.label", nextUrl);
+                                
+                                // hubungkan ke node url
+                                graph.addEdge("related-to"+idNextUrl, nodeUrl, nextUrl, true);
+                            }
+                            // kalo udah ada
+                            else{
+                                graph.addEdge("related-to"+idNextUrl, nodeUrl, nextUrl, true);
+                            }
+                            idNextUrl++;
                         }
                         // kosongkan lagi usernya
                         listNodeUser.clear();
                     }
                     else{
-                        System.err.println("got an error");
+                        System.err.println("got an empty user");
                     }
                     idUrl++;
                 }
