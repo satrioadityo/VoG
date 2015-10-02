@@ -376,7 +376,7 @@ public class Visualisasi extends javax.swing.JFrame {
                         listNodeUser.clear();
                     }
                     else{
-                        System.err.println("got an empty user");
+                        System.err.println("got an empty user on line " + (idUrl+1) + " on " + filePath);
                     }
                     idUrl++;
                 }
