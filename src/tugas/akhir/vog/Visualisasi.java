@@ -36,7 +36,7 @@ public class Visualisasi extends javax.swing.JFrame {
     
     String styleSheet = "";
     Graph graph;
-    int idUrl, idUser;
+    int idUrl, idUser, idEdge;
     private int idNextUrl;
     private Viewer viewer;
     
@@ -383,82 +383,64 @@ public class Visualisasi extends javax.swing.JFrame {
                 String filePath = fc.getSelectedFile().getAbsolutePath();
                 String line;
                 ArrayList<String> listNodeUser = new ArrayList<>();
-                ArrayList<String> listNextUrl = new ArrayList<>();
                 
                 br = new BufferedReader(new FileReader(new File(filePath)));
                 
                 // read file perline
-                
-                idUrl = graph.getNodeCount();
                 idUser = graph.getNodeCount();
-                idNextUrl = graph.getNodeCount();
+                idEdge = graph.getEdgeCount();
+                
                 while((line = br.readLine()) != null){
-                    // proses perline parsing jadi node URL, USER, NEXT_URL
-                    
-                    String nodeUrl = null;
+                    // proses perline parsing jadi node USER, edgenya adalah url.
+                    String url = null;
                     
                     // ada row dari raw data yang ga ada usernya, eliminasi aja
                     if(!"[]".equals(line.split("###")[1])){
-                        // DAPAT NODE URL
-                        nodeUrl = line.split("###")[0];
+                        // DAPAT EDGE URL
+                        url = line.split("###")[0];
                     
                         String rawUser = line.split("###")[1];
                         // karena listNodeUser masih ada [ dan ], maka hilangkan dulu
                         rawUser = rawUser.substring(1, rawUser.length()-1);
                         for (String user : rawUser.split(", ")) {
                             // DAPAT KUMPULAN NODE USER
-                            listNodeUser.add(user);
+                            if(!user.equals("Quora User")){
+                                listNodeUser.add(user);
+                            } else{
+                                System.out.println("Anonymous User found ! (rejected)");
+                            }
+                            
                         }
                         
-                        String rawNextUrl = line.split("###")[2];
-                        for(String nextUrl : rawNextUrl.split(", ")){
-                            // DAPAT KUMPULAN NODE NEXT URL
-                            listNextUrl.add(nextUrl);
-                        }
-                        
-                        // dari node-node yang sudah didapat, buat node di graphstream
-                        if(graph.getNode(nodeUrl) == null){
-                            // kalo belum ada bikin nodenya
-                            graph.addNode(nodeUrl);
-                            graph.getNode(nodeUrl).addAttribute("ui.class", "question");
-                            graph.getNode(nodeUrl).addAttribute("ui.label", nodeUrl);
-                            // TODO label perlu (mungkin)
-                        }
-                        
-                        // buat node user, hubungkan ke masing2 url
+                        // dari node-node yang sudah didapat, buat node di graphstream                        
+                        // buat node user
                         for(String user : listNodeUser){
                             // jika user belum ada, buat node user, hubungkan dengan url
                             if(graph.getNode(user) == null){
                                 graph.addNode(user);
                                 graph.getNode(user).addAttribute("ui.class", "user");
                                 graph.getNode(user).addAttribute("ui.label", user);
-                                
-                                // hubungkan ke node url
-                                graph.addEdge("answer"+idUser, user, nodeUrl, true);
                             }
                             // kalo ada langsung hubungkan
                             else{
-                                graph.addEdge("answer"+idUser, user, nodeUrl, true);
+                                System.out.println("Node user "+user+ "already created");
                             }
                             idUser++;
                         }
+                        // hubungkan ke node user lainnya yg ada di url yang sama
                         
-                        // buat node next_url, hubungkan ke masing2 url
-                        for(String nextUrl : listNextUrl){
-                            // kalo node nextUrl belom ada, create
-                            if(graph.getNode(nextUrl) == null){
-                                graph.addNode(nextUrl);
-                                graph.getNode(nextUrl).addAttribute("ui.class", "question");
-//                                graph.getNode(nextUrl).addAttribute("ui.label", nextUrl);
-                                
-                                // hubungkan ke node url
-                                graph.addEdge("related-to"+idNextUrl, nodeUrl, nextUrl, true);
+                        for(String user : listNodeUser){
+                            for(String anotherUser : listNodeUser){
+                                if(!user.equals(anotherUser) && !graph.getNode(user).hasEdgeBetween(anotherUser)){
+                                    graph.addEdge(idEdge+"", user, anotherUser);
+//                                    graph.getEdge(idEdge+"").addAttribute("ui.label", url);
+                                    idEdge++;
+                                }
+                                else{
+                                    System.out.println("edge already exist");
+                                }
                             }
-                            // kalo udah ada
-                            else{
-                                graph.addEdge("related-to"+idNextUrl, nodeUrl, nextUrl, true);
-                            }
-                            idNextUrl++;
+                            
                         }
                         // kosongkan lagi usernya
                         listNodeUser.clear();
