@@ -358,7 +358,7 @@ public class Visualisasi extends javax.swing.JFrame {
         }
         else if(inputUser.equals("getGraphInfo()")){
             JOptionPane.showMessageDialog(this, "Jumlah node : " + graph.getNodeCount() + "\nJumlah edge : " +
-                    graph.getEdgeCount(), "Error", JOptionPane.ERROR_MESSAGE);
+                    graph.getEdgeCount(), "Info", JOptionPane.INFORMATION_MESSAGE);
         }
         else{
             JOptionPane.showMessageDialog(this, "Wrong query !", "Graph Information", JOptionPane.INFORMATION_MESSAGE);
