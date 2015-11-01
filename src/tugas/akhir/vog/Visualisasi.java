@@ -23,6 +23,8 @@ import org.graphstream.stream.file.FileSinkDGS;
 import org.graphstream.stream.file.FileSourceDGS;
 import org.graphstream.ui.swingViewer.View;
 import org.graphstream.ui.swingViewer.Viewer;
+import org.graphstream.algorithm.Toolkit;
+import org.graphstream.graph.Node;
 
 /**
  *
@@ -52,6 +54,8 @@ public class Visualisasi extends javax.swing.JFrame {
         graph = new MultiGraph("Graph Quora");
         graph.addAttribute("ui.stylesheet", styleSheet);
         viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+        
+        generateSampleGraphWithMatrix();
     }
 
     /**
@@ -275,6 +279,67 @@ public class Visualisasi extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    public void generateSampleGraphWithMatrix(){
+        graph.addNode("1");
+        graph.addNode("2");
+        graph.addNode("3");
+        graph.addNode("4");
+        graph.addNode("5");
+        graph.addNode("6");
+        graph.addNode("8");
+        graph.addNode("9");
+        graph.addNode("11");
+        graph.addNode("12");
+        graph.addNode("13");
+        graph.addNode("14");
+        graph.addNode("15");
+        graph.addNode("16");
+        graph.addNode("7");
+        graph.addNode("10");
+        
+        graph.addEdge("1", "1", "7");
+        graph.addEdge("2", "2", "7");
+        graph.addEdge("3", "3", "7");
+        graph.addEdge("4", "3", "4");
+        graph.addEdge("5", "3", "5");
+        graph.addEdge("6", "4", "5");
+        graph.addEdge("7", "6", "7");
+        graph.addEdge("8", "8", "7");
+        graph.addEdge("9", "8", "9");
+        graph.addEdge("10", "10", "7");
+        graph.addEdge("11", "11", "10");
+        graph.addEdge("12", "12", "10");
+        graph.addEdge("13", "13", "10");
+        graph.addEdge("14", "14", "10");
+        graph.addEdge("15", "14", "16");
+        graph.addEdge("16", "14", "15");
+        graph.addEdge("17", "15", "16");
+        
+//        graph.display();
+        
+        int[][] adjacencyMatrix = Toolkit.getAdjacencyMatrix(graph);
+        for (int i = 0; i < adjacencyMatrix.length; i++) {
+            for (int j = 0; j < adjacencyMatrix.length; j++) {
+                System.out.print(adjacencyMatrix[i][j]+" ");
+            }
+            System.out.println("");
+        }
+        
+        ArrayList<Node> degreeMap = Toolkit.degreeMap(graph);
+        
+        MultiGraph newGraph = null;
+        for (Node n : degreeMap) {
+            System.out.println(n);
+        }
+        
+        // get degree distribution
+        int[] degreeDistribution = Toolkit.degreeDistribution(graph);
+        for (int i = 0; i < degreeDistribution.length; i++) {
+            System.err.println("degree "+i+" = "+degreeDistribution[i]+" nodes");
+        }
+    }
+    
     private void menuItemLoadGraphActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemLoadGraphActionPerformed
         
         // open file dialog untuk memilih graph database
