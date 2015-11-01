@@ -28,6 +28,8 @@ import org.graphstream.ui.swingViewer.Viewer;
 import org.graphstream.algorithm.Toolkit;
 import org.graphstream.algorithm.generator.BarabasiAlbertGenerator;
 import org.graphstream.algorithm.generator.Generator;
+import org.graphstream.algorithm.generator.RandomEuclideanGenerator;
+import org.graphstream.algorithm.generator.RandomGenerator;
 import org.graphstream.graph.Node;
 
 /**
@@ -288,14 +290,34 @@ public class Visualisasi extends javax.swing.JFrame {
         /**
          * use generator from graphstream
          */ 
-        Generator gen = new BarabasiAlbertGenerator(1);
-        // Generate 100 nodes:
+        
+        // ************* barbasi graph ****************/
+//        Generator gen = new BarabasiAlbertGenerator(6);
+//        // Generate 100 nodes:
+//        gen.addSink(graph);
+//        gen.begin();
+//        for(int i=0; i<1000; i++) {
+//            gen.nextEvents();
+//        }
+//        gen.end();
+        
+        // ************** random euclidean *************/
+//        Generator gen = new RandomEuclideanGenerator();
+//        gen.addSink(graph);
+//        gen.begin();
+//        for(int i=0; i<1000; i++) {
+//            gen.nextEvents();
+//        }
+//        gen.end();
+        
+        // ************** random graph *************/
+        Generator gen = new RandomGenerator(5);
         gen.addSink(graph);
         gen.begin();
-        for(int i=0; i<100; i++) {
+        for(int i=0; i<1000; i++)
             gen.nextEvents();
-        }
         gen.end();
+        
         // finish generate
         
         /**
@@ -309,36 +331,24 @@ public class Visualisasi extends javax.swing.JFrame {
 //            System.out.println("");
 //        }
         
+        
+        /**
+         * proses shattering graph untuk generate subgraph
+         */
+        // ketika jumlah node di connected component dari graph lebih dari k proses GCC
         ConnectedComponents cc = new ConnectedComponents();
         cc.init(graph);
-        
-        System.out.printf("%d connected component(s) in this graph, so far.%n",
+        while(cc.getGiantComponent().size() > 20){
+            System.out.println("GCC size : "+cc.getGiantComponent().size());
+            System.out.printf("%d connected component(s) in this graph, so far.%n",
                                cc.getConnectedComponentsCount());
- 
-        // need to remove node with highest degree
-        // find that node
-        Node highestDegreeNode = Toolkit.degreeMap(graph).get(0);
-        highestDegreeNode.addAttribute("ui.label", "highestDegree");
-        graph.removeNode(highestDegreeNode);
-
-        highestDegreeNode = Toolkit.degreeMap(graph).get(0);
-        highestDegreeNode.addAttribute("ui.label", "secondHighestDegree");
-        graph.removeNode(highestDegreeNode);
-        
-        highestDegreeNode = Toolkit.degreeMap(graph).get(0);
-        highestDegreeNode.addAttribute("ui.label", "thirdHighestDegree");
-        graph.removeNode(highestDegreeNode);
-        
-        highestDegreeNode = Toolkit.degreeMap(graph).get(0);
-        highestDegreeNode.addAttribute("ui.label", "fourthHighestDegree");
-        graph.removeNode(highestDegreeNode);
-        
-        System.out.printf("Eventually, there are %d.%n",
+            
+            // temukan node dgn degree paling tinggi
+            Node highestDegreeNode = Toolkit.degreeMap(graph).get(0);
+            graph.removeNode(highestDegreeNode);
+            
+            System.out.printf("Eventually, there are %d.%n",
                         cc.getConnectedComponentsCount());
-        
-        List<Node> giantCC = cc.getGiantComponent();
-        for(Node n : giantCC){
-            System.err.println(n);
         }
         
         graph.display();
