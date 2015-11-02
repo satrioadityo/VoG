@@ -338,6 +338,31 @@ public class Visualisasi extends javax.swing.JFrame {
         paneVisualisasi.add(view, BorderLayout.CENTER);
         paneVisualisasi.setVisible(true);
     }
+
+    private void slashburn() {
+        /**
+        * proses shattering graph untuk generate subgraph
+        */
+       // ketika jumlah node di connected component dari graph lebih dari k proses GCC
+       ConnectedComponents cc = new ConnectedComponents();
+       cc.init(graph);
+       
+        do {            
+            System.out.println("GCC size : "+cc.getGiantComponent().size());
+            System.out.printf("%d connected component(s) in this graph, so far.%n",
+                               cc.getConnectedComponentsCount());
+
+            // temukan node dgn degree paling tinggi
+            Node highestDegreeNode = Toolkit.degreeMap(graph).get(0);
+            
+            // remove nodenya
+            graph.removeNode(highestDegreeNode);
+
+            System.out.printf("Eventually, there are %d.%n",
+                       cc.getConnectedComponentsCount());
+        } while (cc.getGiantComponent().size() > 20); // find GCC
+       
+    }
     
     private void menuItemLoadGraphActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemLoadGraphActionPerformed
         
@@ -425,24 +450,7 @@ public class Visualisasi extends javax.swing.JFrame {
                     graph.getEdgeCount(), "Info", JOptionPane.INFORMATION_MESSAGE);
         }
         else if(inputUser.equals("slashburn()")){
-            /**
-            * proses shattering graph untuk generate subgraph
-            */
-           // ketika jumlah node di connected component dari graph lebih dari k proses GCC
-           ConnectedComponents cc = new ConnectedComponents();
-           cc.init(graph);
-           while(cc.getGiantComponent().size() > 20){
-               System.out.println("GCC size : "+cc.getGiantComponent().size());
-               System.out.printf("%d connected component(s) in this graph, so far.%n",
-                                  cc.getConnectedComponentsCount());
-
-               // temukan node dgn degree paling tinggi
-               Node highestDegreeNode = Toolkit.degreeMap(graph).get(0);
-               graph.removeNode(highestDegreeNode);
-
-               System.out.printf("Eventually, there are %d.%n",
-                           cc.getConnectedComponentsCount());
-           }
+            slashburn();
         }
         else{
             JOptionPane.showMessageDialog(this, "Wrong query !", "Graph Information", JOptionPane.INFORMATION_MESSAGE);
