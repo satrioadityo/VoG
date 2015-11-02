@@ -302,21 +302,21 @@ public class Visualisasi extends javax.swing.JFrame {
 //        gen.end();
         
         // ************** random euclidean *************/
-//        Generator gen = new RandomEuclideanGenerator();
-//        gen.addSink(graph);
-//        gen.begin();
-//        for(int i=0; i<1000; i++) {
-//            gen.nextEvents();
-//        }
-//        gen.end();
-        
-        // ************** random graph *************/
-        Generator gen = new RandomGenerator(5);
+        Generator gen = new RandomEuclideanGenerator();
         gen.addSink(graph);
         gen.begin();
-        for(int i=0; i<1000; i++)
+        for(int i=0; i<1000; i++) {
             gen.nextEvents();
+        }
         gen.end();
+        
+        // ************** random graph *************/
+//        Generator gen = new RandomGenerator(5);
+//        gen.addSink(graph);
+//        gen.begin();
+//        for(int i=0; i<1000; i++)
+//            gen.nextEvents();
+//        gen.end();
         
         // finish generate
         
@@ -331,27 +331,12 @@ public class Visualisasi extends javax.swing.JFrame {
 //            System.out.println("");
 //        }
         
-        
-        /**
-         * proses shattering graph untuk generate subgraph
-         */
-        // ketika jumlah node di connected component dari graph lebih dari k proses GCC
-        ConnectedComponents cc = new ConnectedComponents();
-        cc.init(graph);
-        while(cc.getGiantComponent().size() > 20){
-            System.out.println("GCC size : "+cc.getGiantComponent().size());
-            System.out.printf("%d connected component(s) in this graph, so far.%n",
-                               cc.getConnectedComponentsCount());
-            
-            // temukan node dgn degree paling tinggi
-            Node highestDegreeNode = Toolkit.degreeMap(graph).get(0);
-            graph.removeNode(highestDegreeNode);
-            
-            System.out.printf("Eventually, there are %d.%n",
-                        cc.getConnectedComponentsCount());
-        }
-        
-        graph.display();
+        // diplay graph to panel
+        View view = viewer.addDefaultView(false);
+        viewer.enableAutoLayout();
+        paneVisualisasi.setLayout(new BorderLayout());
+        paneVisualisasi.add(view, BorderLayout.CENTER);
+        paneVisualisasi.setVisible(true);
     }
     
     private void menuItemLoadGraphActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemLoadGraphActionPerformed
@@ -438,6 +423,26 @@ public class Visualisasi extends javax.swing.JFrame {
         else if(inputUser.equals("getGraphInfo()")){
             JOptionPane.showMessageDialog(this, "Jumlah node : " + graph.getNodeCount() + "\nJumlah edge : " +
                     graph.getEdgeCount(), "Info", JOptionPane.INFORMATION_MESSAGE);
+        }
+        else if(inputUser.equals("slashburn()")){
+            /**
+            * proses shattering graph untuk generate subgraph
+            */
+           // ketika jumlah node di connected component dari graph lebih dari k proses GCC
+           ConnectedComponents cc = new ConnectedComponents();
+           cc.init(graph);
+           while(cc.getGiantComponent().size() > 20){
+               System.out.println("GCC size : "+cc.getGiantComponent().size());
+               System.out.printf("%d connected component(s) in this graph, so far.%n",
+                                  cc.getConnectedComponentsCount());
+
+               // temukan node dgn degree paling tinggi
+               Node highestDegreeNode = Toolkit.degreeMap(graph).get(0);
+               graph.removeNode(highestDegreeNode);
+
+               System.out.printf("Eventually, there are %d.%n",
+                           cc.getConnectedComponentsCount());
+           }
         }
         else{
             JOptionPane.showMessageDialog(this, "Wrong query !", "Graph Information", JOptionPane.INFORMATION_MESSAGE);
