@@ -12,6 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -355,9 +356,41 @@ public class Visualisasi extends javax.swing.JFrame {
             // temukan node dgn degree paling tinggi
             Node highestDegreeNode = Toolkit.degreeMap(graph).get(0);
             
+            ArrayList<Node> listHubFriendSingle = new ArrayList<>();
+            
+            // find friends of the hub
+            Iterator<Node> neighborHubIterator = highestDegreeNode.getNeighborNodeIterator();
+            while(neighborHubIterator.hasNext()){
+                Node hubFriend = neighborHubIterator.next();
+                System.out.println("hub neighbor : "+hubFriend);
+                // marks friends that have no friends
+                if(hubFriend.getDegree() == 1){
+                    listHubFriendSingle.add(hubFriend);
+                    System.out.println("single node friend of hub : "+hubFriend.getId());
+                }
+                else{
+//                    System.err.println("out of degree");
+                }
+            }
+
             // remove nodenya
             graph.removeNode(highestDegreeNode);
+            System.out.println("Hub removed");
+            
+            // reconstruct node if single node exist after hub removal
+            if(listHubFriendSingle.size() > 0){
+                graph.addNode(highestDegreeNode.getId());
 
+                // connect to single node of friend of the hub
+                for(Node n : listHubFriendSingle){
+                    graph.addEdge(n.getId(), highestDegreeNode, n);
+                }
+                System.out.println("hub and friend created");
+            }
+            else{
+//                System.err.println("No hub and single friends created");
+            }
+            
             System.out.printf("Eventually, there are %d.%n",
                        cc.getConnectedComponentsCount());
         } while (cc.getGiantComponent().size() > 20); // find GCC
