@@ -48,6 +48,7 @@ public class Visualisasi extends javax.swing.JFrame {
     int idUrl, idUser, idEdge;
     private int idNextUrl;
     private Viewer viewer;
+    ConnectedComponents cc;
     
     public Visualisasi() {
         initComponents();
@@ -63,6 +64,7 @@ public class Visualisasi extends javax.swing.JFrame {
         graph.addAttribute("ui.stylesheet", styleSheet);
         viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
         
+        cc = new ConnectedComponents(graph);
         generateSampleGraphWithMatrix();
     }
 
@@ -347,8 +349,8 @@ public class Visualisasi extends javax.swing.JFrame {
         */
         
         // untuk mendapatkan connected component
-        ConnectedComponents cc = new ConnectedComponents();
-        cc.init(graph);
+//        cc = new ConnectedComponents();
+//        cc.init(graph);
         
         // lakukan slash hub dan burn edge ketika GCC lebih besar dari k
         do {            
@@ -401,6 +403,46 @@ public class Visualisasi extends javax.swing.JFrame {
                        cc.getConnectedComponentsCount());
         } while (cc.getGiantComponent().size() > 20); // find GCC
        
+    }
+    
+    public void labeling(){
+        // get each subgraph after slashburn done
+        while(graph.getNodeCount()>0){
+            Subgraph subgraph = new Subgraph();
+            List<Node> giantSubgraph = cc.getGiantComponent();
+            
+            // buat subgraph
+            // add node dari GCC ke subgraph baru
+            for(Node n : giantSubgraph){
+                System.out.println(n);
+                subgraph.addNode(n.getId());
+            }
+            // get list edge dari subgraph
+            int idEdgeSubgraph = 0;
+            for(Node n : giantSubgraph){
+                Iterator<Node> nFriend = n.getNeighborNodeIterator();
+                
+                while(nFriend.hasNext()){
+                    Node friend = nFriend.next();
+                    if(giantSubgraph.contains(friend)){
+                        subgraph.addEdge(idEdgeSubgraph+"", friend.getId(), n.getId());
+                    }
+                    idEdgeSubgraph++;
+                }
+            }
+            
+            subgraph.getSubgraph().display();
+            graph.clear();
+        }
+        
+        
+        
+        
+            // loop through listOfSubgraph to identify what structure is that subgraph
+            // convert subgraph to adjacency matrix
+            // generate model (Adjacency Matrix of Clique, Bipartite, Star, Chain) based on number of node of subgraph
+            // compare subgraph to each model -> get the Error
+            // select minimum error and set subgraph to identified structure
     }
     
     private void menuItemLoadGraphActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemLoadGraphActionPerformed
@@ -490,6 +532,9 @@ public class Visualisasi extends javax.swing.JFrame {
         }
         else if(inputUser.equals("slashburn()")){
             slashburn();
+        }
+        else if(inputUser.equals("subgraphLabeling()")){
+            labeling();
         }
         else{
             JOptionPane.showMessageDialog(this, "Wrong query !", "Graph Information", JOptionPane.INFORMATION_MESSAGE);
