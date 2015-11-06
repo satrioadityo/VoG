@@ -56,7 +56,8 @@ public class Visualisasi extends javax.swing.JFrame {
         styleSheet = "node {fill-color: blue; size: 10px;}"+
                      "edge {fill-color: black; arrow-shape: arrow; arrow-size: 5px, 4px;}"+
                      "node.question {fill-color: green;}"+
-                     "node.user {fill-color: blue;}";
+                     "node.user {fill-color: blue;}"+
+                     "node.hub {fill-color: red;}";
         
         graph = new MultiGraph("Graph Quora");
         graph.addAttribute("ui.stylesheet", styleSheet);
@@ -303,21 +304,21 @@ public class Visualisasi extends javax.swing.JFrame {
 //        gen.end();
         
         // ************** random euclidean *************/
-        Generator gen = new RandomEuclideanGenerator();
-        gen.addSink(graph);
-        gen.begin();
-        for(int i=0; i<1000; i++) {
-            gen.nextEvents();
-        }
-        gen.end();
-        
-        // ************** random graph *************/
-//        Generator gen = new RandomGenerator(5);
+//        Generator gen = new RandomEuclideanGenerator();
 //        gen.addSink(graph);
 //        gen.begin();
-//        for(int i=0; i<1000; i++)
+//        for(int i=0; i<1000; i++) {
 //            gen.nextEvents();
+//        }
 //        gen.end();
+        
+        // ************** random graph *************/
+        Generator gen = new RandomGenerator(5);
+        gen.addSink(graph);
+        gen.begin();
+        for(int i=0; i<1000; i++)
+            gen.nextEvents();
+        gen.end();
         
         // finish generate
         
@@ -344,26 +345,31 @@ public class Visualisasi extends javax.swing.JFrame {
         /**
         * proses shattering graph untuk generate subgraph
         */
-       // ketika jumlah node di connected component dari graph lebih dari k proses GCC
-       ConnectedComponents cc = new ConnectedComponents();
-       cc.init(graph);
-       
+        
+        // untuk mendapatkan connected component
+        ConnectedComponents cc = new ConnectedComponents();
+        cc.init(graph);
+        
+        // lakukan slash hub dan burn edge ketika GCC lebih besar dari k
         do {            
             System.out.println("GCC size : "+cc.getGiantComponent().size());
             System.out.printf("%d connected component(s) in this graph, so far.%n",
                                cc.getConnectedComponentsCount());
 
             // temukan node dgn degree paling tinggi
-            Node highestDegreeNode = Toolkit.degreeMap(graph).get(0);
+            Node hub = Toolkit.degreeMap(graph).get(0);
             
+            // variable penampung friend of hub yang single
             ArrayList<Node> listHubFriendSingle = new ArrayList<>();
             
-            // find friends of the hub
-            Iterator<Node> neighborHubIterator = highestDegreeNode.getNeighborNodeIterator();
+            // process of finding friends of the hub that friend is single
+            Iterator<Node> neighborHubIterator = hub.getNeighborNodeIterator();
+            
+            // teman dari hub diiterasi satu2 untuk dicari yang single
             while(neighborHubIterator.hasNext()){
                 Node hubFriend = neighborHubIterator.next();
                 System.out.println("hub neighbor : "+hubFriend);
-                // marks friends that have no friends
+                // marks friend that have no friends
                 if(hubFriend.getDegree() == 1){
                     listHubFriendSingle.add(hubFriend);
                     System.out.println("single node friend of hub : "+hubFriend.getId());
@@ -371,21 +377,21 @@ public class Visualisasi extends javax.swing.JFrame {
                 else{
 //                    System.err.println("out of degree");
                 }
-            }
+            } // ketika proses selesai didapatlah list teman dari hub yang single untuk nanti di reconstruct ke hub
 
-            // remove nodenya
-            graph.removeNode(highestDegreeNode);
+            // setelah teman hub didapat
+            // remove hub
+            graph.removeNode(hub);
             System.out.println("Hub removed");
             
-            // reconstruct node if single node exist after hub removal
+            // reconstruct hub if single node exist after hub removal
             if(listHubFriendSingle.size() > 0){
-                graph.addNode(highestDegreeNode.getId());
-
-                // connect to single node of friend of the hub
+                graph.addNode(hub.getId()).addAttribute("ui.class", "hub");
+                // connect single node to the hub
                 for(Node n : listHubFriendSingle){
-                    graph.addEdge(n.getId(), highestDegreeNode, n);
+                    graph.addEdge(n.getId(), hub, n);
                 }
-                System.out.println("hub and friend created");
+                System.out.println("hub and friends created");
             }
             else{
 //                System.err.println("No hub and single friends created");
