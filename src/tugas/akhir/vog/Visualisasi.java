@@ -359,18 +359,21 @@ public class Visualisasi extends javax.swing.JFrame {
      */
     public void labeling(){
         // get each subgraph after slashburn done
+        ArrayList<Subgraph> listSubgraph = new ArrayList<>();
+        
         while(graph.getNodeCount()>0){
+            // buat subgraph
             Subgraph subgraph = new Subgraph();
+            
+            // variable penampung dari node2 yang ada di subgraph
             List<Node> giantSubgraph = cc.getGiantComponent();
             
-            // sorting dulu giantSubgraphnya biar enak pas mau dicompare
-            
-            // buat subgraph
             // add node dari GCC ke subgraph baru
             for(Node n : giantSubgraph){
                 System.out.println(n);
                 subgraph.addNode(n.getId());
             }
+            
             // get list edge dari subgraph
             int idEdgeSubgraph = 0;
             // untuk setiap node dalam giantSubgraph dicari friendnya
@@ -383,20 +386,25 @@ public class Visualisasi extends javax.swing.JFrame {
                     subgraph.addEdge(idEdgeSubgraph+"", friend.getId(), n.getId());
                     idEdgeSubgraph++;
                 }
+                // make n as a processed node instead, not removed
             }
             
-            subgraph.getSubgraph().display();
-            int[][] matrixSubgraph = Toolkit.getAdjacencyMatrix(subgraph.getSubgraph());
+            // tampung subgraph yg ditemukan ke listSubgraph
+            listSubgraph.add(subgraph);
             
-            for (int i = 0; i < matrixSubgraph.length; i++) {
-                for (int j = 0; j < matrixSubgraph.length; j++){
-                    System.out.print(matrixSubgraph[i][j]+" ");
-                }
-                System.out.println("");
-            }
-            graph.clear();
+                       
+//            subgraph.getSubgraph().display();
+//            int[][] matrixSubgraph = Toolkit.getAdjacencyMatrix(subgraph.getSubgraph());
+//            
+//            for (int i = 0; i < matrixSubgraph.length; i++) {
+//                for (int j = 0; j < matrixSubgraph.length; j++){
+//                    System.out.print(matrixSubgraph[i][j]+" ");
+//                }
+//                System.out.println("");
+//            }
+//            graph.clear();
         }
-        
+        System.out.println("pemindahan subgraph telah selesai");
         
         
         
