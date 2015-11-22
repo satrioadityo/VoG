@@ -3,3 +3,5 @@ build/
 dist/
 quora
 quora1000
+*.xlsx
+*.pdf

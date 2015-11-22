@@ -27,10 +27,6 @@ import org.graphstream.stream.file.FileSourceDGS;
 import org.graphstream.ui.swingViewer.View;
 import org.graphstream.ui.swingViewer.Viewer;
 import org.graphstream.algorithm.Toolkit;
-import org.graphstream.algorithm.generator.BarabasiAlbertGenerator;
-import org.graphstream.algorithm.generator.Generator;
-import org.graphstream.algorithm.generator.RandomEuclideanGenerator;
-import org.graphstream.algorithm.generator.RandomGenerator;
 import org.graphstream.graph.Node;
 
 /**
@@ -65,7 +61,6 @@ public class Visualisasi extends javax.swing.JFrame {
         viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
         
         cc = new ConnectedComponents(graph);
-        generateSampleGraphWithMatrix();
     }
 
     /**
@@ -289,82 +284,35 @@ public class Visualisasi extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    
-    public void generateSampleGraphWithMatrix(){
-        /**
-         * use generator from graphstream
-         */ 
-        
-        // ************* barbasi graph ****************/
-//        Generator gen = new BarabasiAlbertGenerator(6);
-//        // Generate 100 nodes:
-//        gen.addSink(graph);
-//        gen.begin();
-//        for(int i=0; i<1000; i++) {
-//            gen.nextEvents();
-//        }
-//        gen.end();
-        
-        // ************** random euclidean *************/
-//        Generator gen = new RandomEuclideanGenerator();
-//        gen.addSink(graph);
-//        gen.begin();
-//        for(int i=0; i<1000; i++) {
-//            gen.nextEvents();
-//        }
-//        gen.end();
-        
-        // ************** random graph *************/
-        Generator gen = new RandomGenerator(5);
-        gen.addSink(graph);
-        gen.begin();
-        for(int i=0; i<1000; i++)
-            gen.nextEvents();
-        gen.end();
-        
-        // finish generate
-        
-        /**
-         * outputting the adjacency matrix of the generated graph
-         */
-//        int[][] adjacencyMatrix = Toolkit.getAdjacencyMatrix(graph);
-//        for (int i = 0; i < adjacencyMatrix.length; i++) {
-//            for (int j = 0; j < adjacencyMatrix.length; j++) {
-//                System.out.print(adjacencyMatrix[i][j]+" ");
-//            }
-//            System.out.println("");
-//        }
-        
-        // diplay graph to panel
-        View view = viewer.addDefaultView(false);
-        viewer.enableAutoLayout();
-        paneVisualisasi.setLayout(new BorderLayout());
-        paneVisualisasi.add(view, BorderLayout.CENTER);
-        paneVisualisasi.setVisible(true);
-    }
-
+    /**
+    * proses shattering graph untuk generate subgraph
+    */
     private void slashburn() {
-        /**
-        * proses shattering graph untuk generate subgraph
-        */
-        
-        // untuk mendapatkan connected component
-//        cc = new ConnectedComponents();
-//        cc.init(graph);
-        
         // lakukan slash hub dan burn edge ketika GCC lebih besar dari k
         do {            
             System.out.println("GCC size : "+cc.getGiantComponent().size());
             System.out.printf("%d connected component(s) in this graph, so far.%n",
                                cc.getConnectedComponentsCount());
 
-            // temukan node dgn degree paling tinggi
-            Node hub = Toolkit.degreeMap(graph).get(0);
+            // temukan node dgn degree paling tinggi yang ada di GCC
+            int i = 0;
+            Node hub = Toolkit.degreeMap(graph).get(i);
+            while(!cc.getGiantComponent().contains(hub)){
+                hub = Toolkit.degreeMap(graph).get(i++);
+            }
+            
+            if(cc.getGiantComponent().contains(hub)){
+                System.out.println("hub in GCC");
+            }
+            else{
+                System.err.println("hub not in GCC");
+            }
+            // hub di GCC sudah ditemukan
             
             // variable penampung friend of hub yang single
             ArrayList<Node> listHubFriendSingle = new ArrayList<>();
             
-            // process of finding friends of the hub that friend is single
+            // iterator for find friends of the hub that friend is single
             Iterator<Node> neighborHubIterator = hub.getNeighborNodeIterator();
             
             // teman dari hub diiterasi satu2 untuk dicari yang single
@@ -401,15 +349,21 @@ public class Visualisasi extends javax.swing.JFrame {
             
             System.out.printf("Eventually, there are %d.%n",
                        cc.getConnectedComponentsCount());
-        } while (cc.getGiantComponent().size() > 20); // find GCC
+        } while (cc.getGiantComponent().size() > 5); // find GCC, where k = 5
        
     }
     
+    /**
+     * labeling
+     * proses untuk memberikan label terhadap setiap subgraph yang dihasilakan oleh method slashburn
+     */
     public void labeling(){
         // get each subgraph after slashburn done
         while(graph.getNodeCount()>0){
             Subgraph subgraph = new Subgraph();
             List<Node> giantSubgraph = cc.getGiantComponent();
+            
+            // sorting dulu giantSubgraphnya biar enak pas mau dicompare
             
             // buat subgraph
             // add node dari GCC ke subgraph baru
@@ -419,19 +373,27 @@ public class Visualisasi extends javax.swing.JFrame {
             }
             // get list edge dari subgraph
             int idEdgeSubgraph = 0;
+            // untuk setiap node dalam giantSubgraph dicari friendnya
             for(Node n : giantSubgraph){
                 Iterator<Node> nFriend = n.getNeighborNodeIterator();
                 
+                // iterasi friend satu per satu
                 while(nFriend.hasNext()){
                     Node friend = nFriend.next();
-                    if(giantSubgraph.contains(friend)){
-                        subgraph.addEdge(idEdgeSubgraph+"", friend.getId(), n.getId());
-                    }
+                    subgraph.addEdge(idEdgeSubgraph+"", friend.getId(), n.getId());
                     idEdgeSubgraph++;
                 }
             }
             
             subgraph.getSubgraph().display();
+            int[][] matrixSubgraph = Toolkit.getAdjacencyMatrix(subgraph.getSubgraph());
+            
+            for (int i = 0; i < matrixSubgraph.length; i++) {
+                for (int j = 0; j < matrixSubgraph.length; j++){
+                    System.out.print(matrixSubgraph[i][j]+" ");
+                }
+                System.out.println("");
+            }
             graph.clear();
         }
         
