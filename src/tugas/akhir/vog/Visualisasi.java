@@ -409,6 +409,19 @@ public class Visualisasi extends javax.swing.JFrame {
         
         for (Subgraph s : listSubgraph) {
             s.reorderSubgraph();
+            Model m = new Model();
+            m.generateStar(s.getOrderedSubgraph().getNodeCount());
+            
+            for (int[] row : m.getStarModel()) {
+                for (int j = 0; j < m.getStarModel().length; j++) {
+                    System.err.print(row[j] + " ");
+                }
+                System.err.println("");
+            }
+            System.err.println("");
+            System.err.println("");
+            System.err.println("");
+            
             int[][] matrixSubgraph = Toolkit.getAdjacencyMatrix(s.getOrderedSubgraph());
             for (int[] row : matrixSubgraph) {
                 for (int j = 0; j < matrixSubgraph.length; j++) {
@@ -423,7 +436,7 @@ public class Visualisasi extends javax.swing.JFrame {
         }
         
             // loop through listOfSubgraph to identify what structure is that subgraph
-            // convert subgraph to adjacency matrix
+            // convert subgraph to ordered adjacency matrix
             // generate model (Adjacency Matrix of Clique, Bipartite, Star, Chain) based on number of node of subgraph
             // compare subgraph to each model -> get the Error
             // select minimum error and set subgraph to identified structure
