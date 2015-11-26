@@ -13,7 +13,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -61,6 +60,7 @@ public class Visualisasi extends javax.swing.JFrame {
         viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
         
         cc = new ConnectedComponents(graph);
+        cc.setCutAttribute("cut");
     }
 
     /**
@@ -348,9 +348,8 @@ public class Visualisasi extends javax.swing.JFrame {
             }
             
             System.out.printf("Eventually, there are %d.%n",
-                       cc.getConnectedComponentsCount());
+                       cc.getConnectedComponentsCount(3));
         } while (cc.getGiantComponent().size() > 5); // find GCC, where k = 5
-       
     }
     
     /**
@@ -361,12 +360,18 @@ public class Visualisasi extends javax.swing.JFrame {
         // get each subgraph after slashburn done
         ArrayList<Subgraph> listSubgraph = new ArrayList<>();
         
-        while(graph.getNodeCount()>0){
+        Subgraph subgraph;
+        ArrayList<Node> giantSubgraph = new ArrayList<>();
+        int i = 0;
+        
+        while(cc.getConnectedComponentsCount(3)>0){
             // buat subgraph
-            Subgraph subgraph = new Subgraph();
+            System.err.println("iteration "+i++);
+            System.err.println("remaining gcc = "+cc.getConnectedComponentsCount(3));
+            subgraph = new Subgraph();
             
             // variable penampung dari node2 yang ada di subgraph
-            List<Node> giantSubgraph = cc.getGiantComponent();
+            giantSubgraph = (ArrayList<Node>) cc.getGiantComponent();
             
             // add node dari GCC ke subgraph baru
             for(Node n : giantSubgraph){
@@ -384,6 +389,9 @@ public class Visualisasi extends javax.swing.JFrame {
                 while(nFriend.hasNext()){
                     Node friend = nFriend.next();
                     subgraph.addEdge(idEdgeSubgraph+"", friend.getId(), n.getId());
+                    if(friend.hasEdgeBetween(n)){
+                        friend.getEdgeBetween(n).setAttribute("cut");
+                    }
                     idEdgeSubgraph++;
                 }
                 // make n as a processed node instead, not removed
