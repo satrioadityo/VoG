@@ -301,12 +301,12 @@ public class Visualisasi extends javax.swing.JFrame {
                 hub = Toolkit.degreeMap(graph).get(i++);
             }
             
-            if(cc.getGiantComponent().contains(hub)){
-                System.out.println("hub in GCC");
-            }
-            else{
-                System.err.println("hub not in GCC");
-            }
+//            if(cc.getGiantComponent().contains(hub)){
+//                System.out.println("hub in GCC");
+//            }
+//            else{
+//                System.err.println("hub not in GCC");
+//            }
             // hub di GCC sudah ditemukan
             
             // variable penampung friend of hub yang single
@@ -318,11 +318,11 @@ public class Visualisasi extends javax.swing.JFrame {
             // teman dari hub diiterasi satu2 untuk dicari yang single
             while(neighborHubIterator.hasNext()){
                 Node hubFriend = neighborHubIterator.next();
-                System.out.println("hub neighbor : "+hubFriend);
+//                System.out.println("hub neighbor : "+hubFriend);
                 // marks friend that have no friends
                 if(hubFriend.getDegree() == 1){
                     listHubFriendSingle.add(hubFriend);
-                    System.out.println("single node friend of hub : "+hubFriend.getId());
+//                    System.out.println("single node friend of hub : "+hubFriend.getId());
                 }
                 else{
 //                    System.err.println("out of degree");
@@ -332,7 +332,7 @@ public class Visualisasi extends javax.swing.JFrame {
             // setelah teman hub didapat
             // remove hub
             graph.removeNode(hub);
-            System.out.println("Hub removed");
+//            System.out.println("Hub removed");
             
             // reconstruct hub if single node exist after hub removal
             if(listHubFriendSingle.size() > 0){
@@ -341,7 +341,7 @@ public class Visualisasi extends javax.swing.JFrame {
                 for(Node n : listHubFriendSingle){
                     graph.addEdge(n.getId(), hub, n);
                 }
-                System.out.println("hub and friends created");
+//                System.out.println("hub and friends created");
             }
             else{
 //                System.err.println("No hub and single friends created");
@@ -618,7 +618,7 @@ public class Visualisasi extends javax.swing.JFrame {
                             if(!user.equals("Quora User")){
                                 listNodeUser.add(user);
                             } else{
-                                System.out.println("Anonymous User found ! (rejected)");
+//                                System.out.println("Anonymous User found ! (rejected)");
                             }
                             
                         }
@@ -634,7 +634,7 @@ public class Visualisasi extends javax.swing.JFrame {
                             }
                             // kalo ada langsung hubungkan
                             else{
-                                System.out.println("Node user "+user+ "already created");
+//                                System.out.println("Node user "+user+ "already created");
                             }
                             idUser++;
                         }
@@ -648,7 +648,7 @@ public class Visualisasi extends javax.swing.JFrame {
                                     idEdge++;
                                 }
                                 else{
-                                    System.out.println("edge already exist");
+//                                    System.out.println("edge already exist");
                                 }
                             }
                             
@@ -657,7 +657,7 @@ public class Visualisasi extends javax.swing.JFrame {
                         listNodeUser.clear();
                     }
                     else{
-                        System.err.println("got an empty user on line " + (idUrl+1) + " on " + filePath);
+//                        System.err.println("got an empty user on line " + (idUrl+1) + " on " + filePath);
                     }
                     idUrl++;
                 }
