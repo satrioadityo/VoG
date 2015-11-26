@@ -366,8 +366,8 @@ public class Visualisasi extends javax.swing.JFrame {
         
         while(cc.getConnectedComponentsCount(3)>0){
             // buat subgraph
-            System.err.println("iteration "+i++);
-            System.err.println("remaining gcc = "+cc.getConnectedComponentsCount(3));
+//            System.err.println("iteration "+i++);
+//            System.err.println("remaining gcc = "+cc.getConnectedComponentsCount(3));
             subgraph = new Subgraph();
             
             // variable penampung dari node2 yang ada di subgraph
@@ -375,7 +375,7 @@ public class Visualisasi extends javax.swing.JFrame {
             
             // add node dari GCC ke subgraph baru
             for(Node n : giantSubgraph){
-                System.out.println(n);
+//                System.out.println(n);
                 subgraph.addNode(n.getId());
             }
             
@@ -408,32 +408,68 @@ public class Visualisasi extends javax.swing.JFrame {
         System.out.println("pemindahan subgraph telah selesai");
         
         for (Subgraph s : listSubgraph) {
+            // subgraph di reorder berdasarkan degree, biar mudah untuk di compare dengan model
             s.reorderSubgraph();
-            Model m = new Model();
-//            m.generateClique(s.getOrderedSubgraph().getNodeCount());
-//            m.generateStar(s.getOrderedSubgraph().getNodeCount());
-            m.generateBipartite(s.getOrderedSubgraph().getNodeCount());
+            s.getOrderedSubgraph().display();
             
-            for (int[] row : m.getBipartiteModel()) {
-                for (int j = 0; j < m.getBipartiteModel().length; j++) {
-                    System.err.print(row[j] + " ");
+            // generate model untuk comparison dengan subgraph
+            Model m = new Model();
+            m.generateClique(s.getOrderedSubgraph().getNodeCount());
+            m.generateStar(s.getOrderedSubgraph().getNodeCount());
+//            m.generateBipartite(s.getOrderedSubgraph().getNodeCount());
+            
+            int[][] matrixSubgraph = Toolkit.getAdjacencyMatrix(s.getOrderedSubgraph());
+            int[][] matrixComparisonClique = new int[s.getOrderedSubgraph().getNodeCount()][s.getOrderedSubgraph().getNodeCount()];
+            int[][] matrixComparisonStar = new int[s.getOrderedSubgraph().getNodeCount()][s.getOrderedSubgraph().getNodeCount()];
+            int z = 0;
+            for (int[] row : matrixSubgraph) {
+                for(int j = 0; j < matrixSubgraph.length; j++){
+                    // proses matching dengan operasi XOR, untuk mendapatkan matrix error
+                    matrixComparisonClique[z][j] = row[j]^m.getCliqueModel()[z][j];
+                    matrixComparisonStar[z][j] = row[j]^m.getStarModel()[z][j];
+                }
+                z++;
+            }
+            
+            System.err.println("Matrix comparison clique");
+            for(int[] row : matrixComparisonClique){
+                for(int j = 0; j < matrixComparisonClique.length; j++){
+                    System.err.print(row[j]+" ");
                 }
                 System.err.println("");
             }
-            System.err.println("");
-            System.err.println("");
-            System.err.println("");
             
-            int[][] matrixSubgraph = Toolkit.getAdjacencyMatrix(s.getOrderedSubgraph());
-            for (int[] row : matrixSubgraph) {
-                for (int j = 0; j < matrixSubgraph.length; j++) {
-                    System.out.print(row[j] + " ");
+            System.err.println("Matrix comparison star");
+            for(int[] row : matrixComparisonStar){
+                for(int j = 0; j < matrixComparisonStar.length; j++){
+                    System.err.print(row[j]+" ");
                 }
-                System.out.println("");
+                System.err.println("");
             }
-            System.out.println("");
-            System.out.println("");
-            System.out.println("");
+            
+            break;
+            
+            
+//            for (int[] row : m.getBipartiteModel()) {
+//                for (int j = 0; j < m.getBipartiteModel().length; j++) {
+//                    System.err.print(row[j] + " ");
+//                }
+//                System.err.println("");
+//            }
+//            System.err.println("");
+//            System.err.println("");
+//            System.err.println("");
+//            
+//            int[][] matrixSubgraph = Toolkit.getAdjacencyMatrix(s.getOrderedSubgraph());
+//            for (int[] row : matrixSubgraph) {
+//                for (int j = 0; j < matrixSubgraph.length; j++) {
+//                    System.out.print(row[j] + " ");
+//                }
+//                System.out.println("");
+//            }
+//            System.out.println("");
+//            System.out.println("");
+//            System.out.println("");
 //            s.getSubgraph().display();
         }
         
