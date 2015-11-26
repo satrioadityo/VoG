@@ -410,10 +410,12 @@ public class Visualisasi extends javax.swing.JFrame {
         for (Subgraph s : listSubgraph) {
             s.reorderSubgraph();
             Model m = new Model();
-            m.generateStar(s.getOrderedSubgraph().getNodeCount());
+//            m.generateClique(s.getOrderedSubgraph().getNodeCount());
+//            m.generateStar(s.getOrderedSubgraph().getNodeCount());
+            m.generateBipartite(s.getOrderedSubgraph().getNodeCount());
             
-            for (int[] row : m.getStarModel()) {
-                for (int j = 0; j < m.getStarModel().length; j++) {
+            for (int[] row : m.getBipartiteModel()) {
+                for (int j = 0; j < m.getBipartiteModel().length; j++) {
                     System.err.print(row[j] + " ");
                 }
                 System.err.println("");

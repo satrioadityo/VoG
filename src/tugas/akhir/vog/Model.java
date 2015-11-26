@@ -22,6 +22,10 @@ public class Model {
     public int[][] getStarModel() {
         return starModel;
     }
+
+    public int[][] getBipartiteModel() {
+        return bipartiteModel;
+    }
     
     void generateClique(int sizeMatrix){
         cliqueModel = new int[sizeMatrix][sizeMatrix];
@@ -49,5 +53,28 @@ public class Model {
                 }
             }
         }
+    }
+    
+    void generateBipartite(int sizeMatrix){
+        System.out.println("size matrix/2"+ sizeMatrix/2);
+        if(sizeMatrix % 2 == 1){
+            bipartiteModel = new int[sizeMatrix][sizeMatrix];
+            for(int i = 0; i < sizeMatrix; i++){
+                for(int j = 0; j< sizeMatrix; j++){
+                    if(    ((j > (sizeMatrix/2-1)) && (i < (sizeMatrix/2))) 
+                            ||
+                            ((j < (sizeMatrix/2)) && (i > (sizeMatrix/2-1))) ){
+                        bipartiteModel[i][j] = 2;
+                    }
+                    else{
+                        bipartiteModel[i][j] = 0;
+                    }
+                }
+            }
+        }
+        else{
+            bipartiteModel = new int[sizeMatrix][sizeMatrix];
+        }
+        
     }
 }
