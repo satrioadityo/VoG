@@ -402,19 +402,25 @@ public class Visualisasi extends javax.swing.JFrame {
             
                        
 //            subgraph.getSubgraph().display();
-//            int[][] matrixSubgraph = Toolkit.getAdjacencyMatrix(subgraph.getSubgraph());
 //            
-//            for (int i = 0; i < matrixSubgraph.length; i++) {
-//                for (int j = 0; j < matrixSubgraph.length; j++){
-//                    System.out.print(matrixSubgraph[i][j]+" ");
-//                }
-//                System.out.println("");
-//            }
 //            graph.clear();
         }
         System.out.println("pemindahan subgraph telah selesai");
         
-        
+        for (Subgraph s : listSubgraph) {
+            s.reorderSubgraph();
+            int[][] matrixSubgraph = Toolkit.getAdjacencyMatrix(s.getOrderedSubgraph());
+            for (int[] row : matrixSubgraph) {
+                for (int j = 0; j < matrixSubgraph.length; j++) {
+                    System.out.print(row[j] + " ");
+                }
+                System.out.println("");
+            }
+            System.out.println("");
+            System.out.println("");
+            System.out.println("");
+//            s.getSubgraph().display();
+        }
         
             // loop through listOfSubgraph to identify what structure is that subgraph
             // convert subgraph to adjacency matrix
