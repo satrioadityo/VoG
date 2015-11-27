@@ -467,7 +467,7 @@ public class Visualisasi extends javax.swing.JFrame {
 //                System.err.println("");
             }
             s.setStarError(countStarError);
-            System.out.println("Jumlah error pada matrix comparison clique = "+s.getStarError());
+            System.out.println("Jumlah error pada matrix comparison star = "+s.getStarError());
             
             System.err.println("Matrix comparison bipartite");
             int countBipartiteError = 0;
@@ -482,7 +482,32 @@ public class Visualisasi extends javax.swing.JFrame {
 //                System.err.println("");
             }
             s.setBipartiteError(countBipartiteError);
-            System.out.println("Jumlah error pada matrix comparison clique = "+s.getBipartiteError());
+            System.out.println("Jumlah error pada matrix comparison bipartite = "+s.getBipartiteError());
+            
+            // perlakuan khusus untuk count error struktur chain
+            int nonZeroElementOnRow = 0;
+            int countChainError = 0;
+            int it = 0;
+            for(int[] row : subgraphMatrix){
+                for(int j = 0; j < subgraphMatrix.length; j++){
+                    if(row[j] != 0){
+                        nonZeroElementOnRow++;
+                    }
+//                    System.out.print(row[j]+" ");
+                }
+                if(it < row.length-2){
+                    countChainError += nonZeroElementOnRow-2;
+                }
+                else{
+                    countChainError += nonZeroElementOnRow-1;
+                }
+                it++;
+                // reset non zero element untuk penghitungan row selanjutnya
+                nonZeroElementOnRow = 0;
+//                System.out.println("");
+            }
+            s.setChainError(countChainError);
+            System.out.println("Jumlah error pada matrix comparison chain = "+s.getChainError());
             
             break;
         }
