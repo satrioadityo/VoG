@@ -394,16 +394,10 @@ public class Visualisasi extends javax.swing.JFrame {
                     }
                     idEdgeSubgraph++;
                 }
-                // make n as a processed node instead, not removed
             }
             
             // tampung subgraph yg ditemukan ke listSubgraph
             listSubgraph.add(subgraph);
-            
-                       
-//            subgraph.getSubgraph().display();
-//            
-//            graph.clear();
         }
         System.out.println("pemindahan subgraph telah selesai");
         
@@ -426,6 +420,7 @@ public class Visualisasi extends javax.swing.JFrame {
             m.generateStar(s.getOrderedSubgraph().getNodeCount());
             m.generateBipartite(s.getOrderedSubgraph().getNodeCount());
             
+            // proses perbandingan
             int[][] matrixSubgraph = Toolkit.getAdjacencyMatrix(s.getOrderedSubgraph());
             int[][] matrixComparisonClique = new int[s.getOrderedSubgraph().getNodeCount()][s.getOrderedSubgraph().getNodeCount()];
             int[][] matrixComparisonStar = new int[s.getOrderedSubgraph().getNodeCount()][s.getOrderedSubgraph().getNodeCount()];
@@ -441,6 +436,7 @@ public class Visualisasi extends javax.swing.JFrame {
                 z++;
             }
             
+            // proses count error
             System.err.println("Matrix comparison clique");
             for(int[] row : matrixComparisonClique){
                 for(int j = 0; j < matrixComparisonClique.length; j++){
@@ -466,35 +462,13 @@ public class Visualisasi extends javax.swing.JFrame {
             }
             
             break;
-            
-            
-//            for (int[] row : m.getBipartiteModel()) {
-//                for (int j = 0; j < m.getBipartiteModel().length; j++) {
-//                    System.err.print(row[j] + " ");
-//                }
-//                System.err.println("");
-//            }
-//            System.err.println("");
-//            System.err.println("");
-//            System.err.println("");
-//            
-//            int[][] matrixSubgraph = Toolkit.getAdjacencyMatrix(s.getOrderedSubgraph());
-//            for (int[] row : matrixSubgraph) {
-//                for (int j = 0; j < matrixSubgraph.length; j++) {
-//                    System.out.print(row[j] + " ");
-//                }
-//                System.out.println("");
-//            }
-//            System.out.println("");
-//            System.out.println("");
-//            System.out.println("");
-//            s.getSubgraph().display();
         }
         
-            // loop through listOfSubgraph to identify what structure is that subgraph
+        // loop through listOfSubgraph to identify what structure is that subgraph
             // convert subgraph to ordered adjacency matrix
             // generate model (Adjacency Matrix of Clique, Bipartite, Star, Chain) based on number of node of subgraph
-            // compare subgraph to each model -> get the Error
+            // compare subgraph to each model
+            // get the Error
             // select minimum error and set subgraph to identified structure
     }
     
