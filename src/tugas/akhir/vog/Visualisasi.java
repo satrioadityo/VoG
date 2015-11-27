@@ -411,22 +411,32 @@ public class Visualisasi extends javax.swing.JFrame {
             // subgraph di reorder berdasarkan degree, biar mudah untuk di compare dengan model
             s.reorderSubgraph();
             s.getOrderedSubgraph().display();
+            System.out.println("Matrix subgraph yang akan diidentifikasi strukturnya");
+            int[][] subgraphMatrix = Toolkit.getAdjacencyMatrix(s.getOrderedSubgraph());
+            for(int[] row : subgraphMatrix){
+                for(int j = 0; j < subgraphMatrix.length; j++){
+                    System.out.print(row[j]+" ");
+                }
+                System.out.println("");
+            }
             
             // generate model untuk comparison dengan subgraph
             Model m = new Model();
             m.generateClique(s.getOrderedSubgraph().getNodeCount());
             m.generateStar(s.getOrderedSubgraph().getNodeCount());
-//            m.generateBipartite(s.getOrderedSubgraph().getNodeCount());
+            m.generateBipartite(s.getOrderedSubgraph().getNodeCount());
             
             int[][] matrixSubgraph = Toolkit.getAdjacencyMatrix(s.getOrderedSubgraph());
             int[][] matrixComparisonClique = new int[s.getOrderedSubgraph().getNodeCount()][s.getOrderedSubgraph().getNodeCount()];
             int[][] matrixComparisonStar = new int[s.getOrderedSubgraph().getNodeCount()][s.getOrderedSubgraph().getNodeCount()];
+            int[][] matrixComparisonBipartite = new int[s.getOrderedSubgraph().getNodeCount()][s.getOrderedSubgraph().getNodeCount()];
             int z = 0;
             for (int[] row : matrixSubgraph) {
                 for(int j = 0; j < matrixSubgraph.length; j++){
                     // proses matching dengan operasi XOR, untuk mendapatkan matrix error
                     matrixComparisonClique[z][j] = row[j]^m.getCliqueModel()[z][j];
                     matrixComparisonStar[z][j] = row[j]^m.getStarModel()[z][j];
+                    matrixComparisonBipartite[z][j] = row[j]^m.getBipartiteModel()[z][j];
                 }
                 z++;
             }
@@ -442,6 +452,14 @@ public class Visualisasi extends javax.swing.JFrame {
             System.err.println("Matrix comparison star");
             for(int[] row : matrixComparisonStar){
                 for(int j = 0; j < matrixComparisonStar.length; j++){
+                    System.err.print(row[j]+" ");
+                }
+                System.err.println("");
+            }
+            
+            System.err.println("Matrix comparison bipartite");
+            for(int[] row : matrixComparisonBipartite){
+                for(int j = 0; j < matrixComparisonBipartite.length; j++){
                     System.err.print(row[j]+" ");
                 }
                 System.err.println("");
