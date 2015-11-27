@@ -19,6 +19,8 @@ import org.graphstream.graph.implementations.MultiGraph;
 public class Subgraph {
     Graph subgraph = new MultiGraph("subgraph");
     Graph orderedSubgraph = new MultiGraph("ordered subgraph");
+    String structure;
+    int cliqueError, starError, bipartiteError, chainError;
     
     public void addNode(String id){
         subgraph.addNode(id);
@@ -34,6 +36,46 @@ public class Subgraph {
 
     public Graph getOrderedSubgraph() {
         return orderedSubgraph;
+    }
+
+    public String getStructure() {
+        return structure;
+    }
+
+    public void setStructure(String structure) {
+        this.structure = structure;
+    }
+
+    public int getCliqueError() {
+        return cliqueError;
+    }
+
+    public void setCliqueError(int cliqueError) {
+        this.cliqueError = cliqueError;
+    }
+
+    public int getStarError() {
+        return starError;
+    }
+
+    public void setStarError(int starError) {
+        this.starError = starError;
+    }
+
+    public int getBipartiteError() {
+        return bipartiteError;
+    }
+
+    public void setBipartiteError(int bipartiteError) {
+        this.bipartiteError = bipartiteError;
+    }
+
+    public int getChainError() {
+        return chainError;
+    }
+
+    public void setChainError(int chainError) {
+        this.chainError = chainError;
     }
 
     void reorderSubgraph() {

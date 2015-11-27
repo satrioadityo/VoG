@@ -436,30 +436,53 @@ public class Visualisasi extends javax.swing.JFrame {
                 z++;
             }
             
+            
+        // PERFECT LABELING PROCESS
             // proses count error
             System.err.println("Matrix comparison clique");
+            int countCliqueError = 0;
             for(int[] row : matrixComparisonClique){
                 for(int j = 0; j < matrixComparisonClique.length; j++){
-                    System.err.print(row[j]+" ");
+                    if(row[j] != 0){
+                        // kalau ada non zero element, berarti ada error, count!
+                        countCliqueError++;
+                    }
+//                    System.err.print(row[j]+" ");
                 }
-                System.err.println("");
+//                System.err.println("");
             }
+            s.setCliqueError(countCliqueError);
+            System.out.println("Jumlah error pada matrix comparison clique = "+s.getCliqueError());
             
             System.err.println("Matrix comparison star");
+            int countStarError = 0;
             for(int[] row : matrixComparisonStar){
                 for(int j = 0; j < matrixComparisonStar.length; j++){
-                    System.err.print(row[j]+" ");
+                    if(row[j] != 0){
+                        // kalau ada non zero element, berarti ada error, count!
+                        countStarError++;
+                    }
+//                    System.err.print(row[j]+" ");
                 }
-                System.err.println("");
+//                System.err.println("");
             }
+            s.setStarError(countStarError);
+            System.out.println("Jumlah error pada matrix comparison clique = "+s.getStarError());
             
             System.err.println("Matrix comparison bipartite");
+            int countBipartiteError = 0;
             for(int[] row : matrixComparisonBipartite){
                 for(int j = 0; j < matrixComparisonBipartite.length; j++){
-                    System.err.print(row[j]+" ");
+                    if(row[j] != 0){
+                        // kalau ada non zero element, berarti ada error, count!
+                        countBipartiteError++;
+                    }
+//                    System.err.print(row[j]+" ");
                 }
-                System.err.println("");
+//                System.err.println("");
             }
+            s.setBipartiteError(countBipartiteError);
+            System.out.println("Jumlah error pada matrix comparison clique = "+s.getBipartiteError());
             
             break;
         }

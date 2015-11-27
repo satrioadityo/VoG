@@ -56,7 +56,6 @@ public class Model {
     }
     
     void generateBipartite(int sizeMatrix){
-        System.out.println("size matrix/2"+ sizeMatrix/2);
         if(sizeMatrix % 2 == 1){
             bipartiteModel = new int[sizeMatrix][sizeMatrix];
             for(int i = 0; i < sizeMatrix; i++){
