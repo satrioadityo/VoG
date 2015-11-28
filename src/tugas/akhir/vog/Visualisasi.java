@@ -524,14 +524,28 @@ public class Visualisasi extends javax.swing.JFrame {
                     s.setPerfectStructure("Perfect Chain");
                 }
                 System.out.println("Subgraph yang diidentifikasi = "+s.getStructure());
+            // Perfect labeling done, pilih error yang paling kecil, set itulah struktur subgraphnya.
             }
+            // Approximate labeling, pilih error yang paling kecil, set itulah struktur subgraphnya.
             else{
-                System.err.println("Subgraph yang diidentifikasi bukan perfect structure, try approximate structure");
+                int lowestErrorOnSubgraph = s.getLowestError();
+                if(s.getCliqueError() == lowestErrorOnSubgraph){
+                    s.setPerfectStructure("Approximate Clique");
+                }
+                else if(s.getStarError() == lowestErrorOnSubgraph){
+                    s.setPerfectStructure("Approximate Star");
+                }
+                else if(s.getBipartiteError() == lowestErrorOnSubgraph){
+                    s.setPerfectStructure("Approximate Bipartite");
+                }
+                else if(s.getChainError() == lowestErrorOnSubgraph){
+                    s.setPerfectStructure("Approximate Chain");
+                }
+                System.out.println("Subgraph yang diidentifikasi = "+s.getStructure());
+//                System.err.println("Subgraph yang diidentifikasi bukan perfect structure,"
+//                        + " try approximate structure");
+                
             }
-            
-        // Perfect labeling done, pilih error yang paling kecil, set itulah struktur subgraphnya.
-            
-            
             
             System.out.println("");
             System.out.println("");
