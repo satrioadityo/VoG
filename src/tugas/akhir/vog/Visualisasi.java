@@ -438,8 +438,7 @@ public class Visualisasi extends javax.swing.JFrame {
             
             
         // PERFECT LABELING PROCESS
-            // proses count error
-            System.err.println("Matrix comparison clique");
+            // proses count error clique
             int countCliqueError = 0;
             for(int[] row : matrixComparisonClique){
                 for(int j = 0; j < matrixComparisonClique.length; j++){
@@ -454,7 +453,7 @@ public class Visualisasi extends javax.swing.JFrame {
             s.setCliqueError(countCliqueError);
             System.out.println("Jumlah error pada matrix comparison clique = "+s.getCliqueError());
             
-            System.err.println("Matrix comparison star");
+            // proses count error star
             int countStarError = 0;
             for(int[] row : matrixComparisonStar){
                 for(int j = 0; j < matrixComparisonStar.length; j++){
@@ -469,7 +468,7 @@ public class Visualisasi extends javax.swing.JFrame {
             s.setStarError(countStarError);
             System.out.println("Jumlah error pada matrix comparison star = "+s.getStarError());
             
-            System.err.println("Matrix comparison bipartite");
+            // proses count error bipartite
             int countBipartiteError = 0;
             for(int[] row : matrixComparisonBipartite){
                 for(int j = 0; j < matrixComparisonBipartite.length; j++){
@@ -484,6 +483,7 @@ public class Visualisasi extends javax.swing.JFrame {
             s.setBipartiteError(countBipartiteError);
             System.out.println("Jumlah error pada matrix comparison bipartite = "+s.getBipartiteError());
             
+            // proses count error chain
             // perlakuan khusus untuk count error struktur chain
             int nonZeroElementOnRow = 0;
             int countChainError = 0;
@@ -509,7 +509,35 @@ public class Visualisasi extends javax.swing.JFrame {
             s.setChainError(countChainError);
             System.out.println("Jumlah error pada matrix comparison chain = "+s.getChainError());
             
-            break;
+            if(s.getLowestError() == 0){
+                // kalau lowest errornya 0 berarti perfect structure
+                if(s.getCliqueError() == 0){
+                    s.setPerfectStructure("Perfect Clique");
+                }
+                else if(s.getStarError() == 0){
+                    s.setPerfectStructure("Perfect Star");
+                }
+                else if(s.getBipartiteError() == 0){
+                    s.setPerfectStructure("Perfect Bipartite");
+                }
+                else if(s.getChainError() == 0){
+                    s.setPerfectStructure("Perfect Chain");
+                }
+                System.out.println("Subgraph yang diidentifikasi = "+s.getStructure());
+            }
+            else{
+                System.err.println("Subgraph yang diidentifikasi bukan perfect structure, try approximate structure");
+            }
+            
+        // Perfect labeling done, pilih error yang paling kecil, set itulah struktur subgraphnya.
+            
+            
+            
+            System.out.println("");
+            System.out.println("");
+            System.out.println("");
+            
+//            break;
         }
         
         // loop through listOfSubgraph to identify what structure is that subgraph

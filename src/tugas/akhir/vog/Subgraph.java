@@ -42,8 +42,22 @@ public class Subgraph {
         return structure;
     }
 
-    public void setStructure(String structure) {
+    public void setPerfectStructure(String structure) {
         this.structure = structure;
+        
+    }
+    
+    public int getLowestError(){
+        ArrayList<Integer> listError = new ArrayList<>();
+        listError.add(cliqueError);
+        listError.add(starError);
+        listError.add(bipartiteError);
+        listError.add(chainError);
+        
+        listError.sort(null);
+        
+        // return lowest error
+        return listError.get(0);
     }
 
     public int getCliqueError() {
@@ -101,6 +115,6 @@ public class Subgraph {
             }
         }
     }
-    
+
     
 }
