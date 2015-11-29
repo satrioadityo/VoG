@@ -401,6 +401,10 @@ public class Visualisasi extends javax.swing.JFrame {
         }
         System.out.println("pemindahan subgraph telah selesai");
         
+        // variable penampung subgraph structure
+        int nPerfectClique = 0, nNearClique = 0, nBipartite = 0, nNearBipartite = 0, 
+                nStar = 0, nNearStar = 0, nChain = 0, nNearChain = 0;
+        
         for (Subgraph s : listSubgraph) {
             // subgraph di reorder berdasarkan degree, biar mudah untuk di compare dengan model
             s.reorderSubgraph();
@@ -513,15 +517,19 @@ public class Visualisasi extends javax.swing.JFrame {
                 // kalau lowest errornya 0 berarti perfect structure
                 if(s.getCliqueError() == 0){
                     s.setPerfectStructure("Perfect Clique");
+                    nPerfectClique++;
                 }
                 else if(s.getStarError() == 0){
                     s.setPerfectStructure("Perfect Star");
+                    nStar++;
                 }
                 else if(s.getBipartiteError() == 0){
                     s.setPerfectStructure("Perfect Bipartite");
+                    nBipartite++;
                 }
                 else if(s.getChainError() == 0){
                     s.setPerfectStructure("Perfect Chain");
+                    nChain++;
                 }
                 System.out.println("Subgraph yang diidentifikasi = "+s.getStructure());
             // Perfect labeling done, pilih error yang paling kecil, set itulah struktur subgraphnya.
@@ -531,15 +539,19 @@ public class Visualisasi extends javax.swing.JFrame {
                 int lowestErrorOnSubgraph = s.getLowestError();
                 if(s.getCliqueError() == lowestErrorOnSubgraph){
                     s.setPerfectStructure("Approximate Clique");
+                    nNearClique++;
                 }
                 else if(s.getStarError() == lowestErrorOnSubgraph){
                     s.setPerfectStructure("Approximate Star");
+                    nNearStar++;
                 }
                 else if(s.getBipartiteError() == lowestErrorOnSubgraph){
                     s.setPerfectStructure("Approximate Bipartite");
+                    nNearBipartite++;
                 }
                 else if(s.getChainError() == lowestErrorOnSubgraph){
                     s.setPerfectStructure("Approximate Chain");
+                    nNearChain++;
                 }
                 System.out.println("Subgraph yang diidentifikasi = "+s.getStructure());
 //                System.err.println("Subgraph yang diidentifikasi bukan perfect structure,"
@@ -553,6 +565,19 @@ public class Visualisasi extends javax.swing.JFrame {
             
 //            break;
         }
+        // looping identifying each subgraph done
+        // do reporting
+        System.out.println("===== SUMMARIZE =====");
+        System.out.println("Perfect clique ditemukan dengan jumlah = "+ nPerfectClique);
+        System.out.println("Perfect bipartite ditemukan dengan jumlah = "+ nBipartite);
+        System.out.println("Perfect star ditemukan dengan jumlah = "+ nStar);
+        System.out.println("Perfect chain ditemukan dengan jumlah = "+ nChain);
+        System.out.println("");
+        System.out.println("Near clique ditemukan dengan jumlah = "+ nNearClique);
+        System.out.println("Near bipartite ditemukan dengan jumlah = "+ nNearBipartite);
+        System.out.println("Near star ditemukan dengan jumlah = "+ nNearStar);
+        System.out.println("Near chain ditemukan dengan jumlah = "+ nNearChain);
+        System.out.println("===== END OF SUMMARIZATION =====");
         
         // loop through listOfSubgraph to identify what structure is that subgraph
             // convert subgraph to ordered adjacency matrix
