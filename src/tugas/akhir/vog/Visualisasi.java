@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package tugas.akhir.vog;
 
 import java.awt.BorderLayout;
@@ -31,13 +26,11 @@ import org.graphstream.graph.Node;
 /**
  *
  * @author satrio
+ * Descripsi : Class untuk memvisualisasikan data Graph agar lebih memudahkan untuk debugging
  */
 public class Visualisasi extends javax.swing.JFrame {
-
-    /**
-     * Creates new form Visualisasi
-     */
     
+    // variable-variable global yang akan digunakan untuk membantu kelancaran jalannya aplikasi.
     String styleSheet = "";
     Graph graph;
     int idUrl, idUser, idEdge;
@@ -328,10 +321,13 @@ public class Visualisasi extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     /**
-    * proses shattering graph untuk generate subgraph
+     * Method SlashBurn
+     * untuk meng-generate subgraph, melalui shattering graph.
+     * input : graph
+     * output : sets of subgraph
     */
     private void slashburn() {
-        // lakukan slash hub dan burn edge ketika GCC lebih besar dari k
+        // lakukan slash edge dan burn hub ketika GCC lebih besar dari k
         do {            
             System.out.println("GCC size : "+cc.getGiantComponent().size());
             System.out.printf("%d connected component(s) in this graph, so far.%n",
@@ -343,16 +339,9 @@ public class Visualisasi extends javax.swing.JFrame {
             while(!cc.getGiantComponent().contains(hub)){
                 hub = Toolkit.degreeMap(graph).get(i++);
             }
-            
-//            if(cc.getGiantComponent().contains(hub)){
-//                System.out.println("hub in GCC");
-//            }
-//            else{
-//                System.err.println("hub not in GCC");
-//            }
             // hub di GCC sudah ditemukan
             
-            // variable penampung friend of hub yang single
+            // variable penampung friend of hub yang single, untuk nanti direconstruct dengan hub
             ArrayList<Node> listHubFriendSingle = new ArrayList<>();
             
             // iterator for find friends of the hub that friend is single
@@ -396,9 +385,11 @@ public class Visualisasi extends javax.swing.JFrame {
     }
     
     /**
-     * labeling
-     * proses untuk memberikan label terhadap setiap subgraph yang dihasilakan oleh method slashburn
-     */
+     * Method Labeling
+     * proses untuk memberikan label(mengidentifikasi struktur) terhadap setiap subgraph yang dihasilkan oleh method slashburn
+     * input : sets of subgraph
+     * output : struktur tiap subgraph
+    */
     public void labeling(){
         // get each subgraph after slashburn done
         ArrayList<Subgraph> listSubgraph = new ArrayList<>();
@@ -408,9 +399,9 @@ public class Visualisasi extends javax.swing.JFrame {
         int i = 0;
         
         while(cc.getConnectedComponentsCount(3)>0){
-            // buat subgraph
 //            System.err.println("iteration "+i++);
 //            System.err.println("remaining gcc = "+cc.getConnectedComponentsCount(3));
+            // buat subgraph
             subgraph = new Subgraph();
             
             // variable penampung dari node2 yang ada di subgraph
@@ -444,7 +435,7 @@ public class Visualisasi extends javax.swing.JFrame {
         }
         System.out.println("pemindahan subgraph telah selesai");
         
-        // variable penampung subgraph structure
+        // variable penampung jumlah subgraph structure
         int nPerfectClique = 0, nNearClique = 0, nBipartite = 0, nNearBipartite = 0, 
                 nStar = 0, nNearStar = 0, nChain = 0, nNearChain = 0;
         
@@ -467,11 +458,13 @@ public class Visualisasi extends javax.swing.JFrame {
             m.generateStar(s.getOrderedSubgraph().getNodeCount());
             m.generateBipartite(s.getOrderedSubgraph().getNodeCount());
             
-            // proses perbandingan
+            // variable penampung berupa matrix untuk hasil comparison
             int[][] matrixSubgraph = Toolkit.getAdjacencyMatrix(s.getOrderedSubgraph());
             int[][] matrixComparisonClique = new int[s.getOrderedSubgraph().getNodeCount()][s.getOrderedSubgraph().getNodeCount()];
             int[][] matrixComparisonStar = new int[s.getOrderedSubgraph().getNodeCount()][s.getOrderedSubgraph().getNodeCount()];
             int[][] matrixComparisonBipartite = new int[s.getOrderedSubgraph().getNodeCount()][s.getOrderedSubgraph().getNodeCount()];
+            
+            // proses perbandingan
             int z = 0;
             for (int[] row : matrixSubgraph) {
                 for(int j = 0; j < matrixSubgraph.length; j++){
@@ -577,7 +570,7 @@ public class Visualisasi extends javax.swing.JFrame {
                 System.out.println("Subgraph yang diidentifikasi = "+s.getStructure());
             // Perfect labeling done, pilih error yang paling kecil, set itulah struktur subgraphnya.
             }
-            // Approximate labeling, pilih error yang paling kecil, set itulah struktur subgraphnya.
+        // APPROXIMATE LABELING, pilih error yang paling kecil, set itulah struktur subgraphnya.
             else{
                 int lowestErrorOnSubgraph = s.getLowestError();
                 if(s.getCliqueError() == lowestErrorOnSubgraph){
@@ -601,11 +594,9 @@ public class Visualisasi extends javax.swing.JFrame {
 //                        + " try approximate structure");
                 
             }
-            
             System.out.println("");
             System.out.println("");
             System.out.println("");
-            
 //            break;
         }
         // looping identifying each subgraph done
@@ -632,6 +623,7 @@ public class Visualisasi extends javax.swing.JFrame {
         
         JOptionPane.showMessageDialog(this, "Summarize done, check on Summarize Pane", "Done", JOptionPane.INFORMATION_MESSAGE);
         
+        // ALGORITMA IDENTIFIKASI STRUKTUR TIAP SUBGRAPH
         // loop through listOfSubgraph to identify what structure is that subgraph
             // convert subgraph to ordered adjacency matrix
             // generate model (Adjacency Matrix of Clique, Bipartite, Star, Chain) based on number of node of subgraph
