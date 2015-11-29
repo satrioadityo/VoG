@@ -77,6 +77,9 @@ public class Visualisasi extends javax.swing.JFrame {
         paneGraphVis = new javax.swing.JPanel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         paneVisualisasi = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblSummarization = new javax.swing.JTable();
         paneContainerQuery = new javax.swing.JPanel();
         txtInputQuery = new javax.swing.JTextField();
         btnUpCamera = new javax.swing.JButton();
@@ -114,10 +117,50 @@ public class Visualisasi extends javax.swing.JFrame {
         );
         paneVisualisasiLayout.setVerticalGroup(
             paneVisualisasiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 289, Short.MAX_VALUE)
+            .addGap(0, 298, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Visualisasi", paneVisualisasi);
+
+        tblSummarization.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {"Perfect Clique", null},
+                {"Perfect Star", null},
+                {"Perfect Bipartite", null},
+                {"Perfect Chain", null},
+                {"Near Clique", null},
+                {"Near Star", ""},
+                {"Near Bipartite", null},
+                {"Near Chain", null}
+            },
+            new String [] {
+                "Structure", "Count"
+            }
+        ));
+        jScrollPane1.setViewportView(tblSummarization);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 785, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 780, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 298, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+        );
+
+        jTabbedPane1.addTab("Summarization", jPanel1);
 
         javax.swing.GroupLayout paneGraphVisLayout = new javax.swing.GroupLayout(paneGraphVis);
         paneGraphVis.setLayout(paneGraphVisLayout);
@@ -132,7 +175,7 @@ public class Visualisasi extends javax.swing.JFrame {
             paneGraphVisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(paneGraphVisLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
+                .addComponent(jTabbedPane1)
                 .addContainerGap())
         );
 
@@ -408,7 +451,7 @@ public class Visualisasi extends javax.swing.JFrame {
         for (Subgraph s : listSubgraph) {
             // subgraph di reorder berdasarkan degree, biar mudah untuk di compare dengan model
             s.reorderSubgraph();
-            s.getOrderedSubgraph().display();
+//            s.getOrderedSubgraph().display();
             System.out.println("Matrix subgraph yang akan diidentifikasi strukturnya");
             int[][] subgraphMatrix = Toolkit.getAdjacencyMatrix(s.getOrderedSubgraph());
             for(int[] row : subgraphMatrix){
@@ -569,15 +612,25 @@ public class Visualisasi extends javax.swing.JFrame {
         // do reporting
         System.out.println("===== SUMMARIZE =====");
         System.out.println("Perfect clique ditemukan dengan jumlah = "+ nPerfectClique);
-        System.out.println("Perfect bipartite ditemukan dengan jumlah = "+ nBipartite);
+        tblSummarization.setValueAt(nPerfectClique, 0, 1);
         System.out.println("Perfect star ditemukan dengan jumlah = "+ nStar);
+        tblSummarization.setValueAt(nStar, 1, 1);
+        System.out.println("Perfect bipartite ditemukan dengan jumlah = "+ nBipartite);
+        tblSummarization.setValueAt(nBipartite, 2, 1);
         System.out.println("Perfect chain ditemukan dengan jumlah = "+ nChain);
+        tblSummarization.setValueAt(nChain, 3, 1);
         System.out.println("");
         System.out.println("Near clique ditemukan dengan jumlah = "+ nNearClique);
-        System.out.println("Near bipartite ditemukan dengan jumlah = "+ nNearBipartite);
+        tblSummarization.setValueAt(nNearClique, 4, 1);
         System.out.println("Near star ditemukan dengan jumlah = "+ nNearStar);
+        tblSummarization.setValueAt(nNearStar, 5, 1);
+        System.out.println("Near bipartite ditemukan dengan jumlah = "+ nNearBipartite);
+        tblSummarization.setValueAt(nNearBipartite, 6, 1);
         System.out.println("Near chain ditemukan dengan jumlah = "+ nNearChain);
+        tblSummarization.setValueAt(nNearChain, 7, 1);
         System.out.println("===== END OF SUMMARIZATION =====");
+        
+        JOptionPane.showMessageDialog(this, "Summarize done, check on Summarize Pane", "Done", JOptionPane.INFORMATION_MESSAGE);
         
         // loop through listOfSubgraph to identify what structure is that subgraph
             // convert subgraph to ordered adjacency matrix
@@ -898,7 +951,9 @@ public class Visualisasi extends javax.swing.JFrame {
     private javax.swing.JButton btnRightCamera;
     private javax.swing.JButton btnUpCamera;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollBar jScrollBar1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JMenu menuEdit;
     private javax.swing.JMenu menuFile;
@@ -910,6 +965,7 @@ public class Visualisasi extends javax.swing.JFrame {
     private javax.swing.JPanel paneGraphVis;
     private javax.swing.JPanel paneMain;
     private javax.swing.JPanel paneVisualisasi;
+    private javax.swing.JTable tblSummarization;
     private javax.swing.JTextField txtInputQuery;
     // End of variables declaration//GEN-END:variables
 }
