@@ -37,6 +37,7 @@ public class Visualisasi extends javax.swing.JFrame {
     private int idNextUrl;
     private Viewer viewer;
     ConnectedComponents cc;
+    private int kHubset;
     
     public Visualisasi() {
         initComponents();
@@ -54,6 +55,19 @@ public class Visualisasi extends javax.swing.JFrame {
         
         cc = new ConnectedComponents(graph);
         cc.setCutAttribute("cut");
+        
+        // initialize kHubset
+        while (true) {
+            String k = JOptionPane.showInputDialog(this, "Input jumlah node maximum pada GCC", "K-Hubset", 
+                JOptionPane.INFORMATION_MESSAGE);
+            try {
+                kHubset = Integer.parseInt(k);
+                break;
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Input berupa angka", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        
     }
 
     /**
@@ -371,7 +385,7 @@ public class Visualisasi extends javax.swing.JFrame {
                 graph.addNode(hub.getId()).addAttribute("ui.class", "hub");
                 // connect single node to the hub
                 for(Node n : listHubFriendSingle){
-                    graph.addEdge(n.getId(), hub, n);
+                    graph.addEdge(n.getId()+" "+Math.random(), hub, n);
                 }
 //                System.out.println("hub and friends created");
             }
@@ -381,7 +395,7 @@ public class Visualisasi extends javax.swing.JFrame {
             
             System.out.printf("Eventually, there are %d.%n",
                        cc.getConnectedComponentsCount(3));
-        } while (cc.getGiantComponent().size() > 5); // find GCC, where k = 5
+        } while (cc.getGiantComponent().size() > kHubset); // find GCC, where k = 5
     }
     
     /**
