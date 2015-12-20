@@ -381,7 +381,7 @@ public class Visualisasi extends javax.swing.JFrame {
             
             System.out.printf("Eventually, there are %d.%n",
                        cc.getConnectedComponentsCount(3));
-        } while (cc.getGiantComponent().size() > 10); // find GCC, where k = 5
+        } while (cc.getGiantComponent().size() > 5); // find GCC, where k = 5
     }
     
     /**
