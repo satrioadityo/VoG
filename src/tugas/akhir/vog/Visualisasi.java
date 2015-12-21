@@ -663,6 +663,8 @@ public class Visualisasi extends javax.swing.JFrame {
             fdgs.addSink(graph);
             
             try {
+                // reset graph
+                graph.clear();
                 // proses load data
                 fdgs.readAll(file);
             } catch (IOException ex) {
@@ -756,6 +758,8 @@ public class Visualisasi extends javax.swing.JFrame {
         
         if(rtn == JFileChooser.APPROVE_OPTION){
             try {
+                // reset graph
+                graph.clear();
                 // load dari txt
                 String filePath = fc.getSelectedFile().getAbsolutePath();
                 String line;

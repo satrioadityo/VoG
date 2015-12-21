@@ -1,6 +1,10 @@
 DGS004
 null 0 0
 cg  "ui.stylesheet":"node {fill-color: blue; size: 10px;}edge {fill-color: black; arrow-shape: arrow; arrow-size: 5px, 4px;}node.question {fill-color: green;}node.user {fill-color: blue;}node.hub {fill-color: red;}"
+an "Katy Levinson"
+cn "Katy Levinson"  "name":"Katy Levinson"
+cn "Katy Levinson"  "ui.label":"Katy Levinson"
+cn "Katy Levinson"  "ui.class":"user"
 an "0"
 an "1"
 an "2"
