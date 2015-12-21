@@ -345,7 +345,7 @@ public class Visualisasi extends javax.swing.JFrame {
         do {            
             System.out.println("GCC size : "+cc.getGiantComponent().size());
             System.out.printf("%d connected component(s) in this graph, so far.%n",
-                               cc.getConnectedComponentsCount());
+                               cc.getConnectedComponentsCount(kHubset));
 
             // temukan node dgn degree paling tinggi yang ada di GCC
             int i = 0;
@@ -394,7 +394,7 @@ public class Visualisasi extends javax.swing.JFrame {
             }
             
             System.out.printf("Eventually, there are %d.%n",
-                       cc.getConnectedComponentsCount(3));
+                       cc.getConnectedComponentsCount(kHubset));
         } while (cc.getGiantComponent().size() > kHubset); // find GCC, where k = 5
     }
     
@@ -663,8 +663,6 @@ public class Visualisasi extends javax.swing.JFrame {
             fdgs.addSink(graph);
             
             try {
-                // reset graph
-                graph.clear();
                 // proses load data
                 fdgs.readAll(file);
             } catch (IOException ex) {
@@ -758,8 +756,6 @@ public class Visualisasi extends javax.swing.JFrame {
         
         if(rtn == JFileChooser.APPROVE_OPTION){
             try {
-                // reset graph
-                graph.clear();
                 // load dari txt
                 String filePath = fc.getSelectedFile().getAbsolutePath();
                 String line;
