@@ -635,7 +635,7 @@ public class Visualisasi extends javax.swing.JFrame {
         tblSummarization.setValueAt(nNearChain, 7, 1);
         System.out.println("===== END OF SUMMARIZATION =====");
         
-        JOptionPane.showMessageDialog(this, "Summarize done, check on Summarize Pane", "Done", JOptionPane.INFORMATION_MESSAGE);
+//        JOptionPane.showMessageDialog(this, "Summarize done, check on Summarize Pane", "Done", JOptionPane.INFORMATION_MESSAGE);
         
         // ALGORITMA IDENTIFIKASI STRUKTUR TIAP SUBGRAPH
         // loop through listOfSubgraph to identify what structure is that subgraph
@@ -736,6 +736,20 @@ public class Visualisasi extends javax.swing.JFrame {
         }
         else if(inputUser.equals("subgraphLabeling()")){
             labeling();
+        }
+        else if(inputUser.equals("VoG()")){
+            long startSlashburn = System.nanoTime();
+            slashburn();
+            long endSlashburn = System.nanoTime() - startSlashburn;
+            
+            long startLabeling = System.nanoTime();
+            labeling();
+            long endLabeling = System.nanoTime() - startLabeling;
+            
+            long VoGTime = endSlashburn + endLabeling;
+            System.out.println("Slashburn time = " + endSlashburn/1000000 + " ms");
+            System.out.println("Subgraph Labeling time = " + endLabeling/1000000 + " ms");
+            System.out.println("VoG time = " + VoGTime/1000000 + " ms");
         }
         else{
             JOptionPane.showMessageDialog(this, "Wrong query !", "Graph Information", JOptionPane.INFORMATION_MESSAGE);
