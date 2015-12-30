@@ -383,6 +383,7 @@ public class Visualisasi extends javax.swing.JFrame {
             // reconstruct hub if single node exist after hub removal
             if(listHubFriendSingle.size() > 0){
                 graph.addNode(hub.getId()).addAttribute("ui.class", "hub");
+                graph.getNode(hub.getId()).addAttribute("ui.label", hub.getId());
                 // connect single node to the hub
                 for(Node n : listHubFriendSingle){
                     graph.addEdge(n.getId()+" "+Math.random(), hub, n);
