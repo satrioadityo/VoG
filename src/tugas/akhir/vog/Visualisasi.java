@@ -60,9 +60,18 @@ public class Visualisasi extends javax.swing.JFrame {
         while (true) {
             String k = JOptionPane.showInputDialog(this, "Input jumlah node maximum pada GCC", "K-Hubset", 
                 JOptionPane.INFORMATION_MESSAGE);
+            if(k == null){
+                System.exit(1);
+            }
             try {
-                kHubset = Integer.parseInt(k);
-                break;
+                int userInputK = Integer.parseInt(k);
+                if((userInputK > 1) && (userInputK <= 20)){
+                    kHubset = userInputK;
+                    break;
+                }
+                else{
+                    JOptionPane.showMessageDialog(this, "Input harus > 1 dan <= 20 !!", "Error", JOptionPane.ERROR_MESSAGE);
+                }
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this, "Input berupa angka", "Error", JOptionPane.ERROR_MESSAGE);
             }
