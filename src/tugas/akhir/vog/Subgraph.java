@@ -6,6 +6,7 @@
 package tugas.akhir.vog;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import org.graphstream.algorithm.Toolkit;
 import org.graphstream.graph.Graph;
@@ -54,7 +55,7 @@ public class Subgraph {
         listError.add(bipartiteError);
         listError.add(chainError);
         
-        listError.sort(null);
+        Collections.sort(listError);
         
         // return lowest error
         return listError.get(0);
